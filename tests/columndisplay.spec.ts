@@ -4,7 +4,7 @@ test.use({
     viewport: { width: 1920, height: 944 },
 });
 
-test('test', async ({ page }) => {
+test('has column displays', async ({ page }) => {
     // Go to Sales Connection
     await page.goto('https://salesconnection.my/');
 
