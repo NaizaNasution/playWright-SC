@@ -11,7 +11,7 @@ test('test', async ({ page }) => {
     // Login Starts
     await page.locator('#nav-menu-container').getByRole('link', { name: 'User loginLogin' }).click();
     await page.locator('input[type="text"]').click();
-    await page.locator('input[type="text"]').fill('nasution.kagami@gmail.com');
+    await page.locator('input[type="text"]').fill('josephstealean1@yopmail.com');
     await page.locator('input[name="password"]').click();
     await page.locator('input[name="password"]').fill('Yonaka1928!');
     await page.getByRole('button', { name: 'Login' }).click();
@@ -35,4 +35,13 @@ test('test', async ({ page }) => {
     // Open the Columns Display modal
     await page1.getByText('Default Columns').click();
     await page1.getByRole('button', { name: ' Create' }).click();
+
+    expect(page.getByText('Contract Equipment')).toBeVisible;
+    expect(page.getByText('Organization')).toBeVisible;
+
+    /*
+    getByTitle('Contract No')
+    locator('span').filter({ hasText: /^Contract Equipment$/ })
+    locator('span').filter({ hasText: /^Organization$/ })
+    */
   });
