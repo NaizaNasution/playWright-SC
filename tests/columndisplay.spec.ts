@@ -23,7 +23,7 @@ test('test', async ({ page }) => {
 
     // Open the Customer
     const page1Promise = page.waitForEvent('popup');
-    await page.getByRole('row', { name: 'open_in_new 3 Prototech Resea Harris Schwartz Personal - Petroleum & Ene Harris Schwartz Prototech Research Corp 00451 N/A N/A N/A Personal Active Joseph Stelean' }).locator('i').click();
+    await page.getByRole('row', { name: 'open_in_new 1 Kagami Armory C Kagami Nasution Corporate - Information Tec Kagami Nasution Kagami Armory Corporation 00455 Corporate Completed Naireza Nasution N Naireza Nasution' }).locator('i').click();
     const page1 = await page1Promise;
 
     // Click on the Project Console tab
@@ -35,13 +35,4 @@ test('test', async ({ page }) => {
     // Open the Columns Display modal
     await page1.getByText('Default Columns').click();
     await page1.getByRole('button', { name: ' Create' }).click();
-
-    expect(page.getByText('Contract Equipment')).toBeVisible;
-    expect(page.getByText('Organization')).toBeVisible;
-
-    /*
-    getByTitle('Contract No')
-    locator('span').filter({ hasText: /^Contract Equipment$/ })
-    locator('span').filter({ hasText: /^Organization$/ })
-    */
   });
