@@ -103,3 +103,22 @@ test('Set Address Not Required Checkbox', async ({ page }) => {
     await page.getByRole('button', { name: 'OK' }).click();
 
 });
+
+test('Duration test', async ({ page }) => {
+    test.slow();
+
+    // Go to Sales Connection - Login
+    await page.goto('https://staging.salesconnection.my/login');
+
+    // Login Starts
+    await page.locator('input[type="text"]').click();
+    await page.locator('input[type="text"]').fill('testeroftsushima@gmail.com');
+    await page.locator('input[name="password"]').click();
+    await page.locator('input[name="password"]').fill('Yonaka1928');
+    await page.getByRole('button', { name: 'Login' }).click();
+    // Login Ends
+
+    // Access Job Template Settings page
+    await page.goto('https://staging.salesconnection.my/templateSettings/ActivityTemplates');
+    
+});
