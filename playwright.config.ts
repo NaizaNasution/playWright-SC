@@ -29,6 +29,11 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     viewport:  { width: 1920, height: 944 },
 
+    // Slow down the test executions
+    launchOptions:{
+      slowMo: 1000
+    },
+
     trace: 'on-first-retry',
   },
 
