@@ -10,7 +10,7 @@ test('has column displays', async ({ page }) => {
 
     // Login Starts
     await page.locator('input[type="text"]').click();
-    await page.locator('input[type="text"]').fill('josephstealean1@yopmail.com');
+    await page.locator('input[type="text"]').fill('nasution.kagami@gmail.com');
     await page.locator('input[name="password"]').click();
     await page.locator('input[name="password"]').fill('Yonaka1928!');
     await page.getByRole('button', { name: 'Login' }).click();
@@ -23,6 +23,7 @@ test('has column displays', async ({ page }) => {
 
     // Open the Customer
     await page.goto('https://salesconnection.my/customerdetails/246350');
+    await page.reload();
 
     // Open Project Console
     await page.getByRole('link', { name: 'Contract' }).click();
@@ -34,9 +35,13 @@ test('has column displays', async ({ page }) => {
     await page.getByText('Default Columns').click();
 
     // Open the Edit Columns modal
-    await page.locator('.border-100 > span:nth-child(3)').click();
+    await page.locator('.border-100 > span:nth-child(3)').first().click();
+
+    // Wait for 10 seconds
+    await page.waitForTimeout(10000)
 
     // Assertion #1 - There is column called "Contract Description"
     const locator_contractDescription = page.getByText('Contract Description');
     await expect(locator_contractDescription).toHaveText('Contract Description');
+
   });
