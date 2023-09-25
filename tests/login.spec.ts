@@ -4,7 +4,7 @@ test.use({
     viewport: { width: 1920, height: 944 },
 });
 
-test('test', async ({ page }) => {
+test('Login', async ({ page }) => {
 
     // Go to Staging - Sales Connection
     await page.goto('https://staging.salesconnection.my/');
