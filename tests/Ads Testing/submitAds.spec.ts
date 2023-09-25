@@ -44,3 +44,6 @@ test('Submit Ads from Google', async ({ page }) => {
   // Click submit button
   await page.getByLabel('Our system can be customized to suit your business needs whether you are an MNC or SME. Fill in the form below for a free consultation and begin empowering your team today').getByRole('button', { name: 'Get Your Free Consultation Now' }).click();
 });
+
+/*test('Submit Ads from FB', async ({ page }) => {
+});*/
