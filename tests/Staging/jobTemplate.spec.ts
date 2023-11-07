@@ -324,3 +324,36 @@ test('Disable a Custom Field', async ({ page }) => {
     const field_indicator = page.getByText('unfold_more House Admin Email edit check close Text Disabled');
     await expect(field_indicator).toHaveText('unfold_more House Admin Email edit check close Text Disabled');
 });
+
+
+test('Edit Access Permission', async ({ page }) => {
+    test.slow();
+
+    // Call login
+    await login(page);
+
+    // Access Job Template Settings page
+    await page.goto('https://staging.salesconnection.my/templateSettings/ActivityTemplates');
+
+    // Access the Service Job Category
+    await page.getByRole('button', { name: 'Meeting/Discussion' }).click();
+    await page.locator('a').filter({ hasText: /^Service$/ }).click();
+
+    // Change the Access Permission to All
+    await page.locator('li').filter({ hasText: 'unfold_more This Text Is Locked edit check close Text Disabled' }).getByTitle('Toggle field configuration section').click();
+    await page.locator('#right-master-box').getByRole('list').locator('div').filter({ hasText: 'unfold_more This Text Is Locked edit check close Text Disabled Editable Field Re' }).getByTitle('Only \'Admin\' will see this field').click();
+    await page.locator('#ASX3-save i').click();
+    await page.getByRole('button', { name: 'OK' }).click();
+    await page.getByRole('button', { name: 'Overwrite Current Template' }).click();
+    await page.getByRole('button', { name: 'OK' }).click();
+
+    // Reset back to All Users
+    await page.getByRole('button', { name: 'Meeting/Discussion' }).click();
+    await page.locator('a').filter({ hasText: /^Service$/ }).click();
+    await page.locator('li').filter({ hasText: 'unfold_more This Text Is Locked edit check close Text Disabled' }).getByTitle('Toggle field configuration section').click();
+    await page.locator('#right-master-box').getByRole('list').locator('div').filter({ hasText: 'unfold_more This Text Is Locked edit check close Text Disabled Editable Field Re' }).getByTitle('All user type can see this field').first().click();
+    await page.locator('#ASX3-save i').click();
+    await page.getByRole('button', { name: 'OK' }).click();
+    await page.getByRole('button', { name: 'Overwrite Current Template' }).click();
+
+});
