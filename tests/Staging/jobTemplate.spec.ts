@@ -39,6 +39,9 @@ test('Set Prepopulate Assigned Users', async ({ page }) => {
     // Save Template
     await page.locator('#ASX3-save i').click();
     await page.getByRole('button', { name: 'OK' }).click();
+    await page.getByRole('button', { name: 'Overwrite All Templates' }).click();
+
+    // Refresh page
     await page.reload();
 
     // Back to Ad-Hoc Category
@@ -82,6 +85,7 @@ test('Set Address Not Required Checkbox', async ({ page }) => {
     await page.getByText('Display \'Address not required\'.').click();
     await page.locator('#ASX3-save i').click();
     await page.getByRole('button', { name: 'OK' }).click();
+    await page.getByRole('button', { name: 'Overwrite All Templates' }).click();
 
     // Refresh page
     await page.reload();
@@ -116,6 +120,7 @@ test('Set Address Prepopulate to Flag 2', async ({ page }) => {
     await page.getByText('Prepopulate the most recent client address created in the list. Automatically pi').click();
     await page.locator('#ASX3-save i').click();
     await page.getByRole('button', { name: 'OK' }).click();
+    await page.getByRole('button', { name: 'Overwrite All Templates' }).click();
 
     // Page Refresh
     await page.reload();
@@ -143,6 +148,7 @@ test('Set Address Prepopulate to Flag 3', async ({ page }) => {
     await page.getByText('Prepopulate "No Address Required" in the list. Automatically pick "No Address Re').click();
     await page.locator('#ASX3-save i').click();
     await page.getByRole('button', { name: 'OK' }).click();
+    await page.getByRole('button', { name: 'Overwrite All Templates' }).click();
 
     // Page Refresh
     await page.reload();
@@ -170,6 +176,7 @@ test('Set Address Prepopulate to Flag 4', async ({ page }) => {
     await page.getByText('No prepopulation required. There will be no automated selection; users must manu').click();
     await page.locator('#ASX3-save i').click();
     await page.getByRole('button', { name: 'OK' }).click();
+    await page.getByRole('button', { name: 'Overwrite All Templates' }).click();
 
     // Page Refresh
     await page.reload();
@@ -197,6 +204,7 @@ test('Set Address Prepopulate to Flag 1', async ({ page }) => {
     await page.getByText('Prepopulate the main client address in the list. Automatically pick the main cli').click();
     await page.locator('#ASX3-save i').click();
     await page.getByRole('button', { name: 'OK' }).click();
+    await page.getByRole('button', { name: 'Overwrite All Templates' }).click();
 
     // Page Refresh
     await page.reload();
@@ -285,6 +293,7 @@ test('Enable a Custom Field', async ({ page }) => {
     await page.locator('#right-master-box').getByRole('list').locator('div').filter({ hasText: 'unfold_more House Admin Email edit check close Text Disabled Editable Field Requ' }).getByTitle('Enable This Field').locator('span').click();
     await page.locator('#ASX3-save i').click();
     await page.getByRole('button', { name: 'OK' }).click();
+    await page.getByRole('button', { name: 'Overwrite All Templates' }).click();
     await page.getByRole('button', { name: 'OK' }).click();
 
     // Change category to Ad-Hoc
@@ -314,6 +323,7 @@ test('Disable a Custom Field', async ({ page }) => {
     await page.locator('#right-master-box').getByRole('list').locator('div').filter({ hasText: 'unfold_more House Admin Email edit check close Text Enabled Editable Field Requ' }).getByTitle('Enable This Field').locator('span').click();
     await page.locator('#ASX3-save i').click();
     await page.getByRole('button', { name: 'OK' }).click();
+    await page.getByRole('button', { name: 'Overwrite All Templates' }).click();
     await page.getByRole('button', { name: 'OK' }).click();
 
     // Change category to Ad-Hoc
