@@ -9,7 +9,7 @@ async function loginAdmin(page: any){
 
     // Login Starts
     await page.locator('input[type="text"]').click();
-    await page.locator('input[type="text"]').fill('nasution.kagami@gmail.com');
+    await page.locator('input[type="text"]').fill('rezalive.sctest2011232@yopmail.com');
     await page.locator('input[name="password"]').click();
     await page.locator('input[name="password"]').fill('Yonaka1928!');
     await page.getByRole('button', { name: 'Login' }).click();
@@ -21,9 +21,9 @@ async function loginSubadmin(page: any){
 
     // Login Starts
     await page.locator('input[type="text"]').click();
-    await page.locator('input[type="text"]').fill('loveyonakasomuch@gmail.com');
+    await page.locator('input[type="text"]').fill('yonaka.sctest381922@yopmail.com');
     await page.locator('input[name="password"]').click();
-    await page.locator('input[name="password"]').fill('Yonaka1928');
+    await page.locator('input[name="password"]').fill('Yonaka1928!');
     await page.getByRole('button', { name: 'Login' }).click();
     // Login Ends
 }
@@ -33,9 +33,9 @@ async function loginStaff(page: any){
 
     // Login Starts
     await page.locator('input[type="text"]').click();
-    await page.locator('input[type="text"]').fill('josephstealean1@yopmail.com');
+    await page.locator('input[type="text"]').fill('frank.sctest481902@yopmail.com');
     await page.locator('input[name="password"]').click();
-    await page.locator('input[name="password"]').fill('Yonaka1928');
+    await page.locator('input[name="password"]').fill('Yonaka1928!');
     await page.getByRole('button', { name: 'Login' }).click();
     // Login Ends
 }
