@@ -43,3 +43,26 @@ test('Open and close Contract Dashboard page from Activity Dashboard page', asyn
     /* REMOVE ASSERTION */
     await contractDashboardPage.close();
 });
+
+test('Check selected elements assigned to following board container', async ({page}) => {
+    await loginAdmin(page);
+    // Go to Activity Dashboard - Sales Connection
+    await page.goto('https://salesconnection.my/dashboard/task');
+
+    /* ASSERTION START */
+    // Click the 'Pending Approval' element
+    const inReviewElement = page.getByRole('tablist').getByText('Pending Approval');
+    await inReviewElement.click();
+
+    // Expect page board have the container of 'In Review'
+    const containerOfPendingApproval = page.locator('#board-container div').filter({ hasText: 'Pending Approval' }).nth(3);
+    await expect(containerOfPendingApproval).toBeVisible();
+    /* ASSERTION END */
+
+    /* REMOVE ASSERTION */
+    await page.getByRole('tablist').getByText('Not Started').click();
+
+    // Expect page board return to 'Not Started' container
+    const containerOfNotStarted = page.locator('#board-container div').filter({ hasText: 'Not Started' }).nth(3);
+    await expect(containerOfNotStarted).toBeVisible();
+})
