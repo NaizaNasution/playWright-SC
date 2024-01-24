@@ -134,3 +134,38 @@ test('Check change of status inside the sidebar',async ({page}) => {
     // Expect the sidebar not have 'In Progress' status
     await expect(statusInProgress).toBeHidden();
 });
+
+test('Check visibility of each element inside the tablist', async ({page}) => {
+    await loginAdmin(page);
+    // Go to Activity Dashboard - Sales Connection
+    await page.goto('https://salesconnection.my/dashboard/task');
+
+    // List of element text on tablist
+    const elementTexts = [
+        'Not Started',
+        'Standby',
+        'In Progress',
+        'Needing Attention',
+        'Request Approved',
+        'In Review (Job)',
+        'Pending Customer\'s Feedback',
+        'Test Status',
+        'Pending Approval',
+        'Completed',
+        'Completed (DF)',
+        'Completed (Job)',
+        'Completed (PF)'
+    ];
+
+    /* ASSERTION START */
+    for (const text of elementTexts) {
+        const element = page.getByRole('tablist').getByText(text, { exact: true });
+
+        // Expect page have each element inside the tablist
+        await expect(element).toBeVisible();
+    }
+    /* ASSERTION END */
+    
+    /* REMOVE ASSERTION */
+    await page.getByRole('tablist').getByText('Not Started').click();
+});
