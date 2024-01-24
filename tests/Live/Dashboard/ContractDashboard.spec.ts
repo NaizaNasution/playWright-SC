@@ -58,7 +58,7 @@ test('Check visibility of each element inside the tablist',async ({page}) => {
         'Needing Attention',
         'Need Support',
         'Pending Approval',
-        'RhoshandiatellyneshiaunneveshenkRhoshandiatellyneshiaunneveshenkRhoshandiatellyn',
+        'Management Approved',
         'Pending Customer\'s Feedback',
         'Final Review',
         'Pending Payment',
