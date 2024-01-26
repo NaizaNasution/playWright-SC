@@ -113,7 +113,7 @@ test('Check change of status inside the sidebar',async ({page}) => {
     // Click the 'Active Lead' element on the tablist
     await page.getByRole('tablist').getByText('Active Lead').click();
     // Click the job inside the 'Active Lead' container
-    await page.locator('div:nth-child(2) > .card-wrapper-outter > .card-content').first().click();
+    await page.getByTitle('Active Lead').nth(1).click();
 
     /* ASSERTION START */
     // Click the edit icon button
@@ -130,6 +130,9 @@ test('Check change of status inside the sidebar',async ({page}) => {
     // Expect sidebar status have 'Stand By'
     const statusStandBy = page.getByRole('textbox', { name: 'Standby' }).first();
     await expect(statusStandBy).toBeVisible();
+    // Expect page have add the job from 'Active lead' to 'Stand By' container 
+    const containerStandBy = page.getByTitle('Standby').nth(1);
+    await expect(containerStandBy).toBeVisible();
     /* ASSERTION END */
 
     /* REMOVE ASSERTION */
@@ -143,7 +146,10 @@ test('Check change of status inside the sidebar',async ({page}) => {
     // Click 'Save Contract' button
     await page.getByRole('button', { name: 'Save Contract' }).click();
 
-    // Expect sidebar status have 'Stand By'
+    // Expect sidebar status have 'Active Lead'
     const statusActive = page.getByRole('textbox', { name: 'Active Lead' }).first();
     await expect(statusActive).toBeVisible();
+    // Expect page have add the job from 'Stand By' to 'Active Lead' container 
+    const containerActive = page.getByTitle('Active Lead').nth(1);
+    await expect(containerActive).toBeVisible();
 });
