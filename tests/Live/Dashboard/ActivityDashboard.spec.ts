@@ -85,6 +85,9 @@ test('Check change of status inside the sidebar',async ({page}) => {
     // Expect the sidebar have 'Not Started' status
     const statusNotStarted = page.locator('p').filter({ hasText: 'Not Started' }).first();
     await expect(statusNotStarted).toBeVisible();
+    // Expect the page have 'Not Started' board container
+    const containerOfNotStarted = page.locator('#board-container div').filter({ hasText: 'Not Started' }).nth(3);
+    await expect(containerOfNotStarted).toBeVisible();
 
     /* ASSERTION START */
     // Click the 'arrow_drop_down' under the status
@@ -97,6 +100,9 @@ test('Check change of status inside the sidebar',async ({page}) => {
     // Expect the sidebar have 'In Progress' under the status
     const statusInProgress = page.locator('#board-container p').filter({ hasText: 'In Progress' }).first();
     await expect(statusInProgress).toBeVisible();
+    // Expect the page have 'In Progress' board container
+    const containerInProgress = page.locator('#board-container div').filter({ hasText: 'In Progress' }).nth(3);
+    await expect(containerInProgress).toBeVisible();
     /* ASSERTION END */
 
     /* REMOVE ASSERTION */
@@ -109,8 +115,8 @@ test('Check change of status inside the sidebar',async ({page}) => {
 
     // Expect the sidebar have 'Not Started' status
     await expect(statusNotStarted).toBeVisible();
-    // Expect the sidebar not have 'In Progress' status
-    await expect(statusInProgress).toBeHidden();
+    // Expect the page have 'Not Started' board container
+    await expect(containerOfNotStarted).toBeVisible();
 });
 
 test('Check visibility of each element inside the tablist', async ({page}) => {
