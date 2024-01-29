@@ -162,7 +162,7 @@ test('Check specific customer name in Activity Dashboard',async ({page}) => {
     const searchKeyword = 'Tim';
 
     // Click search bar
-    await page.getByPlaceholder('Search', { exact: true }).click();
+    await page.getByRole('textbox', { name: 'Search' }).click();
     // Click 'Client' label
     await page.getByText('Client', { exact: true }).click();
     // Click 'Customer Name' label
