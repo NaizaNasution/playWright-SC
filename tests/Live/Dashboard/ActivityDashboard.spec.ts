@@ -44,7 +44,6 @@ test('Open and close Contract Dashboard page from Activity Dashboard page', asyn
     await contractDashboardPage.close();
 });
 
-
 test('Check selected elements assigned to following board container', async ({page}) => {
     await loginAdmin(page);
     // Go to Activity Dashboard - Sales Connection
@@ -186,4 +185,42 @@ test('Check specific customer name in Activity Dashboard',async ({page}) => {
     await page.locator('div:nth-child(5) > .sc-search-tag-remove').click();
     // Expect page to not have a text contain 'Customer Name:Tim'.
     await expect(customerName).toBeHidden();
+})
+
+test('Add/remove a user inside the sidebar',async ({page}) => {
+    await loginAdmin(page);
+    await page.goto('https://salesconnection.my/dashboard/task');
+
+    // Click a job inside the 'Not Started' container
+    await page.locator('.kanban-column-card-item').first().click();
+    // Click edit button
+    await page.locator('span').filter({ hasText: 'more_vert' }).click();
+    // Click 'Edit Activity' button
+    await page.getByText('Edit Activity', { exact: true }).click();
+
+    /* ASSERTION START */
+    // Click 'Add Assign' button
+    await page.getByText('Add Assign').click();
+    // Click 'Frank' under HR label
+    //await page.locator('div:nth-child(337) > .sc-userlist-modal-picker > .p-dialog-content > div > div:nth-child(15) > div:nth-child(2) > div > .p-checkbox-box').first().click();
+    //await page.getByRole('dialog').getByText('HR').click();
+    await page.getByRole('dialog').getByText('HR').getByRole('dialog').getByText('Frank').first().click();
+
+    // Expect page have the 'Frank' title added
+    await expect(page.locator('div').filter({ hasText: /^Frank$/ })).toBeVisible();
+    // Click 'Save' button
+    await page.getByRole('button', { name: 'Save', exact: true }).click();
+    // Expect sidebar assigned user have added 'Frank'
+    await expect(page.locator('#board-container').getByText('Assigned User').getByText('Frank')).toBeVisible();
+    /* ASSERTION END */
+
+    /* REMOVE ASSERTION */
+    // Click 'Add Assign' button
+    await page.getByText('Add Assign').click();
+    // Click remove 'Frank' button
+    await page.locator('li').filter({ hasText: 'Frank' }).locator('span').nth(1).click();
+    // Click 'Save' button
+    await page.getByRole('button', { name: 'Save', exact: true }).click();
+    // Expect sidebar assigned user have added 'Frank'
+    await expect(page.locator('#board-container').getByText('Assigned User').getByText('Frank')).toBeVisible();
 })
