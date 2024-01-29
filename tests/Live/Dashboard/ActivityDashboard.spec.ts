@@ -153,3 +153,37 @@ test('Check visibility of each element inside the tablist', async ({page}) => {
     /* REMOVE ASSERTION */
     await page.getByRole('tablist').getByText('Not Started').click();
 });
+
+test('Check specific customer name in Activity Dashboard',async ({page}) => {
+    await loginAdmin(page);
+    await page.goto('https://salesconnection.my/dashboard/task');
+    
+    // Assign the search key
+    const searchKeyword = 'Tim';
+
+    // Click search bar
+    await page.getByPlaceholder('Search', { exact: true }).click();
+    // Click 'Client' label
+    await page.getByText('Client', { exact: true }).click();
+    // Click 'Customer Name' label
+    await page.getByText('Customer Name').click();
+    // Click label 'Customer Name:' that has text 'Contain'
+    await page.getByText('Contain', { exact: true }).click();
+
+    /* ASSERTION START */
+    // Fill Customer Name 'Tim'
+    await page.getByPlaceholder('Find search key or enter').fill(searchKeyword);
+    // Pressing the "Enter" key
+    await page.getByPlaceholder('Find search key or enter').press('Enter');
+
+    // Expects page to have a text contain 'Customer Name:Tim'.
+    const customerName = page.locator('div').filter({ hasText: /^Customer Name:Tim$/ }).first();
+    await expect(customerName).toBeVisible();
+    /* ASSERTION END */
+
+    /* REMOVE ASSERTION */
+    // Close 'Customer Name:Tim'.
+    await page.locator('div:nth-child(5) > .sc-search-tag-remove').click();
+    // Expect page to not have a text contain 'Customer Name:Tim'.
+    await expect(customerName).toBeHidden();
+})

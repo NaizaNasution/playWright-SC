@@ -94,3 +94,4 @@ test('Check selected elements assigned to following board container', async ({pa
     const containerOfCreated = page.locator('div:nth-child(2) > div').filter({ hasText: 'Created' }).first();
     await expect(containerOfCreated).toBeVisible();
 });
+
