@@ -237,3 +237,68 @@ test('Add/remove a user inside the sidebar',async ({page}) => {
     // Expect sidebar assigned user hae remove 'Frank'
     await expect(sideBarAssignedUser).toBeHidden();
 });
+
+test('Create/delete a job',async ({page}) => {
+    const defaultCategory = page.getByText('Category* Test (WEB)');
+    const defaultStatus = page.getByText('Status* Not Started');
+    const client = page.getByTitle('Test Create Activity');
+    const jobTitle = page.getByText('Test Create Activity').first();
+    const jobCategory = page.locator('#board-container p').filter({ hasText: 'Test (WEB)' }).first();
+    const jobStatus = page.locator('#board-container p').filter({ hasText: /^Not Started$/ });
+
+    await loginAdmin(page);
+    await page.goto('https://salesconnection.my/dashboard/task');
+
+    /* ASSERTION START */
+    // Click '+' button to add new job
+    await page.locator('#board-container > div:nth-child(3)').click();
+
+    // Expect side bar have both default category and status
+    await expect(defaultCategory).toBeVisible();
+    await expect(defaultStatus).toBeVisible();
+
+    // Click 'Click Here To Attach Client' button
+    await page.locator('.bg-blue-50').first().click();
+    // Click search bar
+    await page.getByRole('searchbox', { name: 'Search' }).click();
+    // Fill 'Test Create Activity'
+    await page.getByRole('searchbox', { name: 'Search' }).fill('Test Create Activity');
+    // Press keyboard 'Enter'
+    await page.getByRole('searchbox', { name: 'Search' }).press('Enter');
+    // Click option 'Test Create Activity'
+    await page.getByRole('button', { name: '- Test Create Activity - - -' }).click();
+    // Click client 'Test Create Activity' contact
+    await page.getByRole('button', { name: '\\a 2024-01-30 08:30:00 2024-' }).click();
+
+    // Expect sidebar have client 'Test Create Activity'
+    await expect(client).toBeVisible();
+    
+    // CLick 'TA 3' textbox
+    await page.getByPlaceholder('Enter TA 3').click();
+    // Fill 'Test Create Activity' into the textbox
+    await page.getByPlaceholder('Enter TA 3').fill('Test Create Activity');
+    // CLick 'Save Activity' button
+    await page.getByRole('button', { name: 'Save Activity' }).click();
+    // Click 'OK' button
+    await page.getByRole('button', { name: 'OK' }).click();
+
+    // Expect sidebar have job title 'Test Create Activity'
+    await expect(jobTitle).toBeVisible();
+
+    // Expect sidebar have job category 'Test (WEB)'
+    await expect(jobCategory).toBeVisible();
+
+    // Expect sidebar have job status 'Not Started'
+    await expect(jobStatus).toBeVisible();
+    /* ASSERTION END */
+
+    /* REMOVE ASSERTION */
+    // Click edit button
+    await page.locator('span').filter({ hasText: 'more_vert' }).click();
+    // Click 'Delete' button
+    await page.getByText('Delete', { exact: true }).click();
+    // Click 'Yes' button
+    await page.getByRole('button', { name: ' Yes' }).click();
+    // Click 'OK' button
+    await page.getByRole('button', { name: 'OK' }).click();
+})
