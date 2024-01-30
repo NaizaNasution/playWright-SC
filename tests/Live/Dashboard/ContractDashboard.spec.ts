@@ -166,7 +166,7 @@ test('Check specific customer name in Contract Dashboard',async ({page}) => {
     // Click search bar
     await page.getByRole('textbox', { name: 'Search' }).click();
     // Click 'Client' label
-    await page.getByText('Client', { exact: true }).click();
+    await page.locator('div').filter({ hasText: /^Client$/ }).first().click();    
     // Click 'Customer Name' label
     await page.getByText('Customer Name').click();
     // Click label 'Customer Name:' that has text 'Contain'
