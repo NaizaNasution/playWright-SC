@@ -201,17 +201,25 @@ test('Add/remove a user inside the sidebar',async ({page}) => {
     /* ASSERTION START */
     // Click 'Add Assign' button
     await page.getByText('Add Assign').click();
-    // Click 'Frank' under HR label
-    //await page.locator('div:nth-child(337) > .sc-userlist-modal-picker > .p-dialog-content > div > div:nth-child(15) > div:nth-child(2) > div > .p-checkbox-box').first().click();
-    //await page.getByRole('dialog').getByText('HR').click();
-    await page.getByRole('dialog').getByText('HR').getByRole('dialog').getByText('Frank').first().click();
+    // Click search bar
+    await page.getByRole('textbox', { name: 'Search name' }).click();
+    // Fill in 'Frank' name
+    await page.getByRole('textbox', { name: 'Search name' }).fill('Frank');
+    // Press keyboard 'Enter'
+    await page.getByRole('textbox', { name: 'Search name' }).press('Enter');
+    // Click 'Frank' checkbox option
+    await page.getByRole('dialog').getByText('Frank').first().click();
 
     // Expect page have the 'Frank' title added
-    await expect(page.locator('div').filter({ hasText: /^Frank$/ })).toBeVisible();
+    const assignUser = page.locator('div').filter({ hasText: /^Frank$/ });
+    await expect(assignUser).toBeVisible();
+
     // Click 'Save' button
     await page.getByRole('button', { name: 'Save', exact: true }).click();
+
     // Expect sidebar assigned user have added 'Frank'
-    await expect(page.locator('#board-container').getByText('Assigned User').getByText('Frank')).toBeVisible();
+    const sideBarAssignedUser = page.locator('#board-container').getByText('Frank');
+    await expect(sideBarAssignedUser).toBeVisible();
     /* ASSERTION END */
 
     /* REMOVE ASSERTION */
@@ -219,8 +227,13 @@ test('Add/remove a user inside the sidebar',async ({page}) => {
     await page.getByText('Add Assign').click();
     // Click remove 'Frank' button
     await page.locator('li').filter({ hasText: 'Frank' }).locator('span').nth(1).click();
+
+    // Expect page have the 'Frank' title remove
+    await expect(assignUser).toBeHidden();
+
     // Click 'Save' button
     await page.getByRole('button', { name: 'Save', exact: true }).click();
-    // Expect sidebar assigned user have added 'Frank'
-    await expect(page.locator('#board-container').getByText('Assigned User').getByText('Frank')).toBeVisible();
-})
+
+    // Expect sidebar assigned user hae remove 'Frank'
+    await expect(sideBarAssignedUser).toBeHidden();
+});
