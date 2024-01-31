@@ -245,6 +245,7 @@ test('Create/delete a job',async ({page}) => {
     const jobTitle = page.getByText('Test Create Activity').first();
     const jobCategory = page.locator('#board-container p').filter({ hasText: 'Test (WEB)' }).first();
     const jobStatus = page.locator('#board-container p').filter({ hasText: /^Not Started$/ });
+    const jobOnBoard = page.locator('.card-content').first().getByText('Test Create Activity');
 
     await loginAdmin(page);
     await page.goto('https://salesconnection.my/dashboard/task');
@@ -290,6 +291,9 @@ test('Create/delete a job',async ({page}) => {
 
     // Expect sidebar have job status 'Not Started'
     await expect(jobStatus).toBeVisible();
+
+    // Expect container have job title 'Test Create Activity'
+    await expect(jobOnBoard).toBeVisible();
     /* ASSERTION END */
 
     /* REMOVE ASSERTION */
@@ -301,4 +305,7 @@ test('Create/delete a job',async ({page}) => {
     await page.getByRole('button', { name: ' Yes' }).click();
     // Click 'OK' button
     await page.getByRole('button', { name: 'OK' }).click();
+
+    // Expect container does not have job title 'Test Create Activity'
+    await expect(jobOnBoard).toBeHidden();
 })
