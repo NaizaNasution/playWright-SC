@@ -308,4 +308,66 @@ test('Create/delete a job',async ({page}) => {
 
     // Expect container does not have job title 'Test Create Activity'
     await expect(jobOnBoard).toBeHidden();
-})
+});
+
+test('Check change of category inside the sidebar',async ({page}) => {
+    const initialCategory = page.locator('p').filter({ hasText: /^Service$/ });
+    const initialJobCategory = page.locator('.kanban-column-card-item').first().filter({ hasText: 'Service' });
+    const changedCategory = page.locator('p').filter({ hasText: 'Test (WEB)' });
+    const changedJobCategory = page.locator('.kanban-column-card-item').first().filter({ hasText: 'Test (WEB)' });
+
+    await loginAdmin(page);
+    await page.goto('https://salesconnection.my/dashboard/task');
+
+    // Click a job inside 'Not Started' container
+    await page.locator('.kanban-column-card-item').first().click();
+    
+    /* ASSERTION START */
+    // CLick edit button
+    await page.getByText('more_vert').click();
+    // Click 'Edit Activity' button
+    await page.getByText('Edit Activity', { exact: true }).click();
+    // Click drop down arrow under 'Category'
+    await page.locator('#board-container').getByText('arrow_drop_down').first().click();
+    // Click 'Test (WEB)' option
+    await changedCategory.click();
+    // Click 'Save' button
+    await page.getByRole('button', { name: 'SAVE', exact: true }).click();
+    // Click 'Save Activity' button
+    await page.getByRole('button', { name: 'Save Activity' }).click();
+    // Click 'Continue' button
+    await page.getByRole('button', { name: 'Continue' }).click();
+    // Click 'OK' button
+    await page.getByRole('button', { name: 'OK' }).click();
+
+    // Expect sidebar have category 'Text (WEB)'
+    await expect(changedJobCategory).toBeVisible();
+
+    // Expect the job have category title 'Test (WEB)'
+    await expect(changedCategory).toBeVisible();
+    /* ASSERTION END */
+
+    /* REMOVE ASSERTION */
+    // CLick edit button
+    await page.getByText('more_vert').click();
+    // Click 'Edit Activity' button
+    await page.getByText('Edit Activity', { exact: true }).click();
+    // Click drop down arrow under 'Category'
+    await page.locator('#board-container').getByText('arrow_drop_down').first().click();
+    // CLick 'Service' option
+    await initialCategory.click();
+    // Click 'Save' button
+    await page.getByRole('button', { name: 'SAVE', exact: true }).click();    
+    // Click 'Save Activity' button
+    await page.getByRole('button', { name: 'Save Activity' }).click();
+    // Click 'Continue' button
+    await page.getByRole('button', { name: 'Continue' }).click();
+    // Click 'OK' button
+    await page.getByRole('button', { name: 'OK' }).click();
+
+    // Expect sidebar have category 'Service'
+    await expect(initialCategory).toBeVisible();
+    
+    // Expect the job have category title 'Service'
+    await expect(initialJobCategory).toBeVisible();
+});
