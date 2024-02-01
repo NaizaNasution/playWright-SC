@@ -68,6 +68,11 @@ test('Check selected elements assigned to following board container', async ({pa
 });
 
 test('Check change of status inside the sidebar',async ({page}) => {
+    const statusNotStarted = page.locator('#board-container p').filter({ hasText: 'Not Started' }).first();
+    const containerOfNotStarted = page.locator('#board-container div').filter({ hasText: 'Not Started' }).nth(3);
+    const statusInProgress = page.locator('#board-container p').filter({ hasText: 'In Progress' }).first();
+    const containerInProgress = page.locator('#board-container div').filter({ hasText: 'In Progress' }).nth(3);
+
     await loginAdmin(page);
 
     // Go to Activity Dashboard - Sales Connection
@@ -82,33 +87,41 @@ test('Check change of status inside the sidebar',async ({page}) => {
     // Click the 'Edit Activity' button
     await page.locator('span').filter({ hasText: 'mode_edit' }).click();
     // Expect the sidebar have 'Not Started' status
-    const statusNotStarted = page.locator('p').filter({ hasText: 'Not Started' }).first();
     await expect(statusNotStarted).toBeVisible();
     // Expect the page have 'Not Started' board container
-    const containerOfNotStarted = page.locator('#board-container div').filter({ hasText: 'Not Started' }).nth(3);
     await expect(containerOfNotStarted).toBeVisible();
 
     /* ASSERTION START */
     // Click the 'arrow_drop_down' under the status
     await page.locator('#board-container').getByText('arrow_drop_down').nth(1).click();
+    // Click the search bar
+    await page.getByRole('searchbox', { name: 'Search by user name' }).click();
+    // Fill 'In Progress' inside the search bar
+    await page.getByRole('searchbox', { name: 'Search by user name' }).fill('In Progress');
+    // Press keyboard 'Enter'
+    await page.getByRole('searchbox', { name: 'Search by user name' }).press('Enter');
     // Click the 'In Progress' checkbox
-    await page.locator('div:nth-child(3) > .listoption-checkbox > label').first().click();
+    await page.locator('p').filter({ hasText: 'In Progress' }).click();
     // Click 'Save' button
     await page.getByRole('button', { name: 'SAVE', exact: true }).click();
 
     // Expect the sidebar have 'In Progress' under the status
-    const statusInProgress = page.locator('#board-container p').filter({ hasText: 'In Progress' }).first();
     await expect(statusInProgress).toBeVisible();
     // Expect the page have 'In Progress' board container
-    const containerInProgress = page.locator('#board-container div').filter({ hasText: 'In Progress' }).nth(3);
     await expect(containerInProgress).toBeVisible();
     /* ASSERTION END */
 
     /* REMOVE ASSERTION */
     // Click the 'arrow_drop_down' under the status
     await page.locator('#board-container').getByText('arrow_drop_down').nth(1).click();
+    // Click the search bar
+    await page.getByRole('searchbox', { name: 'Search by user name' }).click();
+    // Fill 'Not Started' inside the search bar
+    await page.getByRole('searchbox', { name: 'Search by user name' }).fill('Not Started');
+    // Press keyboard 'Enter'
+    await page.getByRole('searchbox', { name: 'Search by user name' }).press('Enter');
     // Click the 'Not Started' checkbox
-    await page.locator('.listoption-checkbox > label').first().click();
+    await page.locator('p').filter({ hasText: 'Not Started' }).nth(1).click();
     // Click 'Save' button
     await page.getByRole('button', { name: 'SAVE', exact: true }).click();
 
