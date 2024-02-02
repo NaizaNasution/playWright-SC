@@ -454,10 +454,10 @@ test('Check change of category inside the sidebar',async ({page}) => {
 });
 
 test('Check change of status by drag and drop between the container',async ({page}) => {
-    const initialNotStartedJobCount = page.locator('#board-container div').filter({ hasText: 'Not Started31' }).nth(3);
-    const finalNotStartedJobCount = page.locator('#board-container div').filter({ hasText: 'Not Started30' }).nth(3);
-    const initialInProgressJobCount = page.locator('#board-container div').filter({ hasText: 'In Progress1' }).nth(3);
-    const finalInProgressJobCount = page.locator('#board-container div').filter({ hasText: 'In Progress2' }).nth(3);
+    const initialNotStartedJobCount = page.locator('#board-container div').filter({ hasText: 'Not Started' }).filter({ hasText: '33' }).nth(3);
+    const finalNotStartedJobCount = page.locator('#board-container div').filter({ hasText: 'Not Started' }).filter({ hasText: '32' }).nth(3);
+    const initialInProgressJobCount = page.locator('#board-container div').filter({ hasText: 'In Progress' }).filter({ hasText: '1' }).nth(3);
+    const finalInProgressJobCount = page.locator('#board-container div').filter({ hasText: 'In Progress' }).filter({ hasText: '2' }).nth(3);
 
     const intitialBox = page.getByText('Change Status ToNot Started');
     const destinationBox = page.getByText('Change Status ToIn Progress');
