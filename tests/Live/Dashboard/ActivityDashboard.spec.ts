@@ -387,6 +387,15 @@ test('Check change of category inside the sidebar',async ({page}) => {
     // Click drop down arrow under 'Category'
     await page.locator('#board-container').getByText('arrow_drop_down').first().click();
 
+    // Click search bar
+    await page.getByRole('searchbox', { name: 'Search by user name' }).click();
+
+    // Fill 'Test (WEB)'
+    await page.getByRole('searchbox', { name: 'Search by user name' }).fill('Test (WEB)');
+    
+    // Press keyboard 'Enter'
+    await page.getByRole('searchbox', { name: 'Search by user name' }).press('Enter');
+
     // Click 'Test (WEB)' option
     await changedCategory.click();
 
@@ -395,9 +404,6 @@ test('Check change of category inside the sidebar',async ({page}) => {
 
     // Click 'Save Activity' button
     await page.getByRole('button', { name: 'Save Activity' }).click();
-
-    // Click 'Continue' button
-    await page.getByRole('button', { name: 'Continue' }).click();
 
     // Click 'OK' button
     await page.getByRole('button', { name: 'OK' }).click();
@@ -419,6 +425,15 @@ test('Check change of category inside the sidebar',async ({page}) => {
     // Click drop down arrow under 'Category'
     await page.locator('#board-container').getByText('arrow_drop_down').first().click();
 
+    // Click search bar
+    await page.getByRole('searchbox', { name: 'Search by user name' }).click();
+
+    // Fill 'Service'
+    await page.getByRole('searchbox', { name: 'Search by user name' }).fill('Service');
+    
+    // Press keyboard 'Enter'
+    await page.getByRole('searchbox', { name: 'Search by user name' }).press('Enter');
+
     // CLick 'Service' option
     await initialCategory.click();
 
@@ -427,9 +442,6 @@ test('Check change of category inside the sidebar',async ({page}) => {
 
     // Click 'Save Activity' button
     await page.getByRole('button', { name: 'Save Activity' }).click();
-
-    // Click 'Continue' button
-    await page.getByRole('button', { name: 'Continue' }).click();
     
     // Click 'OK' button
     await page.getByRole('button', { name: 'OK' }).click();
