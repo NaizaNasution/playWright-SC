@@ -452,3 +452,78 @@ test('Check change of category inside the sidebar',async ({page}) => {
     // Expect the job have category title 'Service'
     await expect(initialJobCategory).toBeVisible();
 });
+
+test('Check change of status by drag and drop between the container',async ({page}) => {
+    const initialNotStartedJobCount = page.locator('#board-container div').filter({ hasText: 'Not Started31' }).nth(3);
+    const finalNotStartedJobCount = page.locator('#board-container div').filter({ hasText: 'Not Started30' }).nth(3);
+    const initialInProgressJobCount = page.locator('#board-container div').filter({ hasText: 'In Progress1' }).nth(3);
+    const finalInProgressJobCount = page.locator('#board-container div').filter({ hasText: 'In Progress2' }).nth(3);
+
+    const intitialBox = page.getByText('Change Status ToNot Started');
+    const destinationBox = page.getByText('Change Status ToIn Progress');
+
+    const popUpUpdate = page.locator('div').filter({ hasText: 'Confirm Update StatusAre you' }).first();
+
+    await loginAdmin(page);
+    await page.goto('https://salesconnection.my/dashboard/task');
+
+    // Expect job count in status 'Not Started' is 31 and 'In Progress' is 1
+    await expect(initialNotStartedJobCount).toBeVisible();
+    await expect(initialInProgressJobCount).toBeVisible();
+
+    // Hover the mouse to a job inside 'Not Started' container
+    await page.locator('.card-content').first().hover();
+
+    /* ASSERTION START */
+    // Press down mouse button
+    await page.mouse.down();
+
+    // Hover the mouse to container of 'In Progress'
+    await page.locator('div:nth-child(3) > .surface-hover').hover();
+
+    // Hover the mouse to the colored box inside of 'In Progress' container
+    await destinationBox.hover();
+
+    // Release mouse button
+    await page.mouse.up();
+
+    // Click 'Update' button
+    await page.getByRole('button', { name: 'Update' }).click();
+
+    // Expect page have pop up of status update
+    await expect(popUpUpdate).toBeVisible();
+
+    // Expect job count in status 'Not Started' is 30 and 'In Progress' is 2
+    await expect(finalNotStartedJobCount).toBeVisible();
+    await expect(finalInProgressJobCount).toBeVisible();
+    /* ASSERTION END */
+
+    /* REMOVE ASSERTION */
+    // Hover the mouse to a job inside 'In Progress' container
+    await page.locator('div:nth-child(3) > .surface-hover > div > .card-wrapper-outter > .card-content').first().hover();
+
+    // Press down the mouse
+    await page.mouse.down();
+
+    // Hover the mouse to container of 'Not Started'
+    await page.locator('.kanban-column-container > div > .surface-hover').first().hover();
+
+    // Hover the mouse to coloured box inside the 'Not Started' container
+    await intitialBox.hover();
+
+    // Release mouse button
+    await page.mouse.up();
+
+    // Expect page have pop up of status update
+    await expect(popUpUpdate).toBeVisible();
+
+    // Click 'Update' button
+    await page.getByRole('button', { name: 'Update' }).click();
+
+    // Expect page have pop up of status update
+    await expect(popUpUpdate).toBeVisible();
+        
+    // Expect job count in status 'Not Started' is 31 and 'In Progress' is 1
+    await expect(initialNotStartedJobCount).toBeVisible();
+    await expect(initialInProgressJobCount).toBeVisible();
+});
