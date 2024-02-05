@@ -370,20 +370,24 @@ test('Check change of category inside the sidebar',async ({page}) => {
     const initialJobCategory = page.locator('.kanban-column-card-item').first().filter({ hasText: 'Service' });
     const changedCategory = page.locator('p').filter({ hasText: 'Test (WEB)' });
     const changedJobCategory = page.locator('.kanban-column-card-item').first().filter({ hasText: 'Test (WEB)' });
-
+    const textBoxTA3 = page.locator('.formcustomfields-container > div:nth-child(5)').getByPlaceholder('Enter TA 3');
+    
     await loginAdmin(page);
     await page.goto('https://salesconnection.my/dashboard/task');
 
     // Click a job inside 'Not Started' container
     await page.locator('.kanban-column-card-item').first().click();
+
+    // Expect sidebar initial category is 'Service'
+    await expect(initialCategory).toBeVisible();
     
     /* ASSERTION START */
     // CLick edit button
     await page.getByText('more_vert').click();
-
+    
     // Click 'Edit Activity' button
     await page.getByText('Edit Activity', { exact: true }).click();
-
+    
     // Click drop down arrow under 'Category'
     await page.locator('#board-container').getByText('arrow_drop_down').first().click();
 
@@ -402,8 +406,26 @@ test('Check change of category inside the sidebar',async ({page}) => {
     // Click 'Save' button
     await page.getByRole('button', { name: 'SAVE', exact: true }).click();
 
+    // Get the value from the 'TA3' textbox
+    const isTextBoxEmpty = await textBoxTA3.inputValue() === ' ';
+
+    // Check 'TA3' textbox whether it's empty or not
+    if (!isTextBoxEmpty) {
+        //await page.getByPlaceholder('Enter TA 3').fill('Test change category\n');
+        await textBoxTA3.fill('Test change category\n');
+    }
+
+    // Expect textbox 'TA3' is filled
+    await expect(textBoxTA3).toHaveValue('Test change category\n');
+
     // Click 'Save Activity' button
     await page.getByRole('button', { name: 'Save Activity' }).click();
+    
+    // Click 'This Activity'
+    await page.locator('div').filter({ hasText: 'This Activity' }).nth(4).click();
+
+    // Click 'Continue' button
+    await page.getByRole('button', { name: 'Continue' }).click();
 
     // Click 'OK' button
     await page.getByRole('button', { name: 'OK' }).click();
@@ -418,10 +440,10 @@ test('Check change of category inside the sidebar',async ({page}) => {
     /* REMOVE ASSERTION */
     // CLick edit button
     await page.getByText('more_vert').click();
-
+    
     // Click 'Edit Activity' button
     await page.getByText('Edit Activity', { exact: true }).click();
-
+    
     // Click drop down arrow under 'Category'
     await page.locator('#board-container').getByText('arrow_drop_down').first().click();
 
@@ -436,13 +458,19 @@ test('Check change of category inside the sidebar',async ({page}) => {
 
     // CLick 'Service' option
     await initialCategory.click();
-
+    
     // Click 'Save' button
-    await page.getByRole('button', { name: 'SAVE', exact: true }).click();   
-
+    await page.getByRole('button', { name: 'SAVE', exact: true }).click();    
+    
     // Click 'Save Activity' button
     await page.getByRole('button', { name: 'Save Activity' }).click();
-    
+
+    // Click 'This Activity'
+    await page.locator('div').filter({ hasText: 'This Activity' }).nth(4).click();
+
+    // Click 'Continue' button
+    await page.getByRole('button', { name: 'Continue' }).click();
+
     // Click 'OK' button
     await page.getByRole('button', { name: 'OK' }).click();
 
