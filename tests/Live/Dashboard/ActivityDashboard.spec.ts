@@ -555,3 +555,82 @@ test('Check change of status by drag and drop between the container',async ({pag
     await expect(initialNotStartedJobCount).toBeVisible();
     await expect(initialInProgressJobCount).toBeVisible();
 });
+
+test('Check detail of duplicate job',async ({page}) => {
+    const category = page.locator('p').filter({ hasText: 'Test (WEB)' });
+    const status = page.locator('p').filter({ hasText: /^Not Started$/ }).first();
+    const clientID = page.getByText('Client - C00350');
+    const clientCompany = page.locator('.p-0 > div > .my-3 > .w-full > div:nth-child(2)');
+    const contractSeqNo = page.getByText('Contract - C00511');
+    const contractTitle = page.locator('div').filter({ hasText: /^Contract 1$/ });
+    // Equipement could be multiple
+    const equipementCondition = page.locator('#board-container').getByText('Good');
+    const equipementTitle = page.locator('#board-container p').filter({ hasText: 'Daikin JHG918291' });
+    const startDate = page.getByText('February 2024').first();
+    const startTime = page.getByText('09:00 AM', { exact: true });
+    const endDate = page.getByText('February 2024').nth(1);
+    const endTime = page.getByText('10:00 AM', { exact: true });
+    // Assigned user could be multiple
+    //const assignedUser = page.getByTitle('Alert Naireza Nasution', { exact: true });
+    //const assignedUser = page.locator('div').filter({ hasText: /^Naireza Nasution$/ }).getByRole('paragraph');
+
+    const reminders = [
+        'Service Completed (Immediately)',
+        'Service Completed',
+        '5 minutes after start',
+        'Test Reminder Job',
+    ];
+
+    const description = page.locator('div').filter({ hasText: /^Repeat Job Test 1$/ }).first();
+    const secondPICName = page.locator('div').filter({ hasText: /^This is the additional description of the job$/ });
+    const issuesNo = page.locator('div').filter({ hasText: /^21$/ });
+    const TA3 = page.locator('div:nth-child(5) > .fieldset-top-icon > .field-value').filter({ hasText: 'Test change category' });
+    const checkedDateAndTime = page.locator('div').filter({ hasText: /^25 April 2023 12:00 PM$/ });
+
+    await loginAdmin(page);
+    await page.goto('https://salesconnection.my/dashboard/task');
+
+    // Click a job inside 'Not Started' container
+    await page.locator('.kanban-column-card-item').first().click();
+
+    // Click edit button
+    await page.locator('span').filter({ hasText: 'more_vert' }).click();
+
+    /* ASSERTION START */
+    await page.locator('ol').getByText('Copy Activity').click();
+    await page.getByRole('button', { name: 'Save Activity' }).click();
+    await page.getByRole('button', { name: 'OK' }).click();
+
+    await expect(category).toBeVisible();
+    await expect(status).toBeVisible();
+    await expect(clientID).toBeVisible();
+    await expect(clientCompany).toBeVisible();
+    await expect(contractSeqNo).toBeVisible();
+    await expect(contractTitle).toBeVisible();
+    await expect(equipementCondition).toBeVisible();
+    await expect(equipementTitle).toBeVisible();
+    await expect(startDate).toBeVisible();
+    await expect(startTime).toBeVisible();
+    await expect(endDate).toBeVisible();
+    await expect(endTime).toBeVisible();
+    //await expect(assignedUser).toBeVisible();
+
+    // Expect sidebar have the list of reminders
+    for (const text of reminders) {
+        const element = page.locator('p').getByText(text, { exact: true });;
+        await expect(element).toBeVisible();
+    }
+
+    await expect(description).toBeVisible();
+    await expect(secondPICName).toBeVisible();
+    await expect(issuesNo).toBeVisible();
+    await expect(TA3).toBeVisible();
+    await expect(checkedDateAndTime).toBeVisible();
+    /* ASSERTION END */
+
+    /* REMOVE ASSERTION */
+    await page.locator('span').filter({ hasText: 'more_vert' }).click();
+    await page.locator('ol').getByText('Delete', { exact: true }).click();
+    await page.getByRole('button', { name: ' Yes' }).click();
+    await page.getByRole('button', { name: 'OK' }).click();
+});
