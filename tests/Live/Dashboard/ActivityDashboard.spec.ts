@@ -471,11 +471,17 @@ test('Check change of category inside the sidebar',async ({page}) => {
 });
 
 test('Check change of status by drag and drop between the container',async ({page}) => {
+    // Job before and after switch of the position
+    const initialJobPosition = page.locator('.card-content').first();
+    const changedJobPosition = page.locator('div:nth-child(3) > .surface-hover > div > .card-wrapper-outter > .card-content').first();
+
+    // Changes of job count in each of status column
     const initialNotStartedJobCount = page.locator('#board-container div').filter({ hasText: 'Not Started' }).filter({ hasText: '33' }).nth(3);
     const finalNotStartedJobCount = page.locator('#board-container div').filter({ hasText: 'Not Started' }).filter({ hasText: '32' }).nth(3);
     const initialInProgressJobCount = page.locator('#board-container div').filter({ hasText: 'In Progress' }).filter({ hasText: '1' }).nth(3);
     const finalInProgressJobCount = page.locator('#board-container div').filter({ hasText: 'In Progress' }).filter({ hasText: '2' }).nth(3);
 
+    // Change of status box that allow user to drop the job
     const intitialBox = page.getByText('Change Status ToNot Started');
     const destinationBox = page.getByText('Change Status ToIn Progress');
 
@@ -489,7 +495,7 @@ test('Check change of status by drag and drop between the container',async ({pag
     await expect(initialInProgressJobCount).toBeVisible();
 
     // Hover the mouse to a job inside 'Not Started' container
-    await page.locator('.card-content').first().hover();
+    await initialJobPosition.hover();
 
     /* ASSERTION START */
     // Press down mouse button
@@ -517,7 +523,7 @@ test('Check change of status by drag and drop between the container',async ({pag
 
     /* REMOVE ASSERTION */
     // Hover the mouse to a job inside 'In Progress' container
-    await page.locator('div:nth-child(3) > .surface-hover > div > .card-wrapper-outter > .card-content').first().hover();
+    await changedJobPosition.hover();
 
     // Press down the mouse
     await page.mouse.down();
