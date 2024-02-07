@@ -366,6 +366,7 @@ test('Create/delete a job',async ({page}) => {
 });
 
 test('Check change of category inside the sidebar',async ({page}) => {
+    const job = page.locator('.card-content').first();
     const initialCategory = page.locator('p').filter({ hasText: /^Service$/ });
     const initialJobCategory = page.locator('.kanban-column-card-item').first().filter({ hasText: 'Service' });
     const changedCategory = page.locator('p').filter({ hasText: 'Test (WEB)' });
@@ -376,7 +377,7 @@ test('Check change of category inside the sidebar',async ({page}) => {
     await page.goto('https://salesconnection.my/dashboard/task');
 
     // Click a job inside 'Not Started' container
-    await page.locator('.kanban-column-card-item').first().click();
+    await job.click();
 
     // Expect sidebar initial category is 'Service'
     await expect(initialCategory).toBeVisible();
@@ -420,12 +421,6 @@ test('Check change of category inside the sidebar',async ({page}) => {
 
     // Click 'Save Activity' button
     await page.getByRole('button', { name: 'Save Activity' }).click();
-    
-    // Click 'This Activity'
-    await page.locator('div').filter({ hasText: 'This Activity' }).nth(4).click();
-
-    // Click 'Continue' button
-    await page.getByRole('button', { name: 'Continue' }).click();
 
     // Click 'OK' button
     await page.getByRole('button', { name: 'OK' }).click();
@@ -464,12 +459,6 @@ test('Check change of category inside the sidebar',async ({page}) => {
     
     // Click 'Save Activity' button
     await page.getByRole('button', { name: 'Save Activity' }).click();
-
-    // Click 'This Activity'
-    await page.locator('div').filter({ hasText: 'This Activity' }).nth(4).click();
-
-    // Click 'Continue' button
-    await page.getByRole('button', { name: 'Continue' }).click();
 
     // Click 'OK' button
     await page.getByRole('button', { name: 'OK' }).click();
