@@ -629,3 +629,32 @@ test('Check detail of duplicate job',async ({page}) => {
     await page.getByRole('button', { name: ' Yes' }).click();
     await page.getByRole('button', { name: 'OK' }).click();
 });
+
+test('Check visibility of each job inside a status container', async ({page}) => {
+    // Index of 'Not Started' the status column
+    const kanbanColumnIndex = 1;
+    // Index of the job
+    let surfaceHoverIndex = 1;
+    // Count of job shown on the status container
+    const countOfJob = 43;
+
+    let selector = '.kanban-column-container > div:nth-child(' + kanbanColumnIndex + ') > .surface-hover > div:nth-child(' + surfaceHoverIndex + ')';
+    let selectJob = page.locator(selector).first();
+
+    await loginAdmin(page);
+    await page.goto('https://salesconnection.my/dashboard/task');
+
+    // Iteration on job
+    for (let i = 1; i <= countOfJob; i++) {
+        surfaceHoverIndex = i;
+
+        selector = '.kanban-column-container > div:nth-child(' + kanbanColumnIndex + ') > .surface-hover > div:nth-child(' + surfaceHoverIndex + ')';
+        selectJob = page.locator(selector).first();
+
+        // Scroll down when there is no visible of the job
+        await selectJob.scrollIntoViewIfNeeded();
+
+        // Expect the column have the job shown
+        await expect(selectJob).toBeInViewport();
+    }
+});
