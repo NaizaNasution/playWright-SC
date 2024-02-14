@@ -18,6 +18,24 @@ async function loginAdmin(page: any){
     // Login Ends
 }
 
+/* Function that create new favourite filter*/
+async function createNewFavourite(page: any, keyword: String) {
+    // Click 'Favourite Filter' button
+    await page.locator('div').filter({ hasText: /^Favourite Filter$/ }).first().click();
+    
+    // Click 'Add' button
+    await page.getByText('Add').click();
+
+    // Click search bar with placeholder 'Enter label name'
+    await page.getByPlaceholder('Enter label name').click();
+
+    // Fill keyword inside the search bar
+    await page.getByPlaceholder('Enter label name').fill(keyword);
+
+    // Click 'Save' button
+    await page.locator('div').filter({ hasText: /^Save$/ }).locator('span').click();
+}
+
 test('Open and close Contract Dashboard page from Activity Dashboard page', async ({ page }) => {
     const contractIcon = page.locator('ol').filter({ hasText: 'ContractDashboard' }).locator('div').first();
     const newTab = page.waitForEvent('popup');
@@ -657,4 +675,54 @@ test('Check visibility of each job inside a status container', async ({page}) =>
         // Expect the column have the job shown
         await expect(selectJob).toBeInViewport();
     }
+});
+
+test('Create/delete a favourite filter', async ({page}) => {
+    const favouriteFilterKeyword = 'Filter contract C00764';
+    const defaultFavouriteFilter = page.locator('div').filter({ hasText: /^Favourite Filter$/ }).first();
+    const newFavouriteFilter = page.locator('div').filter({ hasText: /^Filter contract C00764$/ }).first();
+    const addedFilter = page.getByText('Filter contract C00764public_off');
+    const popUpDeleted = page.locator('div').filter({ hasText: 'DeletedFavourite filter' }).nth(3);
+
+    await loginAdmin(page);
+    await page.goto('https://salesconnection.my/dashboard/task');
+
+    // Expect button title 'Favourite Filter' is shown
+    await expect(defaultFavouriteFilter).toBeVisible();
+
+    /* ASSERTION START */
+    // Call function to create new favourite filter
+    await createNewFavourite(page, favouriteFilterKeyword);
+
+    // Expect button title 'Filter contract C00764' is shown
+    await expect(newFavouriteFilter).toBeVisible();
+
+    // Click 'Filter contract C00764' button
+    await newFavouriteFilter.click();
+
+    // Expect menu bar has title 'Filter contract C00764'
+    await expect(addedFilter).toBeVisible();
+    /* ASSERTION END */
+
+    /* REMOVE ASSERTION */
+    // Click 'Delete' button
+    await page.getByTitle('Delete').first().click();
+
+    // Click 'Yes' button
+    await page.getByRole('button', { name: ' Yes' }).click();
+
+    // Expect pop up 'DeletedFavourite filter' is shown
+    await expect(popUpDeleted).toBeVisible();
+
+    // Expect button title 'Filter contract C00764' is not shown
+    await expect(newFavouriteFilter).not.toBeVisible();
+
+    // Expect button title 'Favourite Filter' is shown
+    await expect(defaultFavouriteFilter).toBeVisible();
+
+    // Click 'Favourite Filter' button
+    await defaultFavouriteFilter.click();
+
+    // Expect menu bar has no title 'Filter contract C00764'
+    await expect(addedFilter).not.toBeVisible();
 });
