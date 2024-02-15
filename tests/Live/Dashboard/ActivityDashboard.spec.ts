@@ -854,3 +854,31 @@ test('Update/remove an element from favourite filter', async ({page}) => {
     // Expect menu bar has no title 'Filter contract C00764'
     await expect(addedFilter).not.toBeVisible();
 });
+
+test('Clear searched title element with "Clear All" button', async ({page}) => {
+    // Selection of search bar group,filter variable and operator
+    const selectGroup = page.locator('div').filter({ hasText: /^Activity Contract$/ }).first();
+    const selectFilterVariable = page.getByText('Contract Seq. No.');
+    const selectOperator = page.getByText('Contain', { exact: true });
+
+    // Input keyword and new filter element
+    const keyword = 'C00764';
+    const contractSeqNo = page.locator('div').filter({ hasText: /^Contract Seq\. No\.:C00764, C00764$/ }).first();
+
+    await loginAdmin(page);
+    await page.goto('https://salesconnection.my/dashboard/task');
+
+    /* ASSERTION START */
+    // Call function to create new Contract Seq No. :C00764, C00764
+    await createContractSeqNo(page, selectGroup, selectFilterVariable, selectOperator, keyword);
+
+    // Expect page have 'Contract Seq No. :C00764, C00764' title
+    await expect(contractSeqNo).toBeVisible();
+
+    // Click 'Clear All' button
+    await page.locator('#board-container').getByText('Clear All').click();
+
+    // Expect page NOT have 'Contract Seq No. :C00764, C00764' title
+    await expect(contractSeqNo).not.toBeVisible();
+    /* ASSERTION END */
+});
