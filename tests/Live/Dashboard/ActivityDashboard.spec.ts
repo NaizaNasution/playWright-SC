@@ -36,6 +36,36 @@ async function createNewFavourite(page: any, keyword: String) {
     await page.locator('div').filter({ hasText: /^Save$/ }).locator('span').click();
 }
 
+/* Function that create new Contract Seq No.*/
+async function createContractSeqNo(page: any, selectGroup: any, selectFilterVariable: any, selectOperator: any, keyword: String) {
+    // Click search bar
+    await page.getByRole('textbox', { name: 'Search' }).click();
+
+    // Click 'Activity Contract' button
+    await selectGroup.click();
+
+    // Click 'Contract Seq No.' button
+    await selectFilterVariable.click();
+
+    // Click 'Contract Seq No. :' with contain operator button
+    await selectOperator.click();
+
+    // Click placeholder 'Min'
+    await page.getByPlaceholder('Min').click();
+
+    // Fill 'C00764' as min
+    await page.getByPlaceholder('Min').fill(keyword);
+
+    // Click placeholder 'Max'
+    await page.getByPlaceholder('Max').click();
+
+    // Fill 'C00764' as max
+    await page.getByPlaceholder('Max').fill(keyword);
+
+    // Click 'Done' button
+    await page.getByText('Done').click();
+}
+
 test('Open and close Contract Dashboard page from Activity Dashboard page', async ({ page }) => {
     const contractIcon = page.locator('ol').filter({ hasText: 'ContractDashboard' }).locator('div').first();
     const newTab = page.waitForEvent('popup');
@@ -756,32 +786,8 @@ test('Update/remove an element from favourite filter', async ({page}) => {
     // Expect button title 'Filter contract C00764' is shown
     await expect(newFavouriteFilter).toBeVisible();
 
-    // Click search bar
-    await page.getByRole('textbox', { name: 'Search' }).click();
-
-    // Click 'Activity Contract' button
-    await selectGroup.click();
-
-    // Click 'Contract Seq No.' button
-    await selectFilterVariable.click();
-
-    // Click 'Contract Seq No. :' with contain operator button
-    await selectOperator.click();
-
-    // Click placeholder 'Min'
-    await page.getByPlaceholder('Min').click();
-
-    // Fill 'C00764' as min
-    await page.getByPlaceholder('Min').fill(keyword);
-
-    // Click placeholder 'Max'
-    await page.getByPlaceholder('Max').click();
-
-    // Fill 'C00764' as max
-    await page.getByPlaceholder('Max').fill(keyword);
-
-    // Click 'Done' button
-    await page.getByText('Done').click();
+    // Call function to create new Contract Seq No. :C00764, C00764
+    await createContractSeqNo(page, selectGroup, selectFilterVariable, selectOperator, keyword);
 
     // Expect page have 'Contract Seq No. :C00764, C00764' title
     await expect(contractSeqNo).toBeVisible();
