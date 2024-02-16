@@ -106,6 +106,14 @@ test('Check selected elements assigned to following board container', async ({pa
 });
 
 test('Check change of status inside the sidebar',async ({page}) => {
+    const statusOption = page.getByRole('combobox').nth(1);
+   
+    const statusStandBy = page.getByRole('textbox', { name: 'Standby' }).first();
+    const containerStandBy = page.getByTitle('Standby').nth(1);
+
+    const statusActive = page.getByRole('textbox', { name: 'Active Lead' }).first();
+    const containerActive = page.getByTitle('Active Lead').nth(1);
+
     await loginAdmin(page);
 
     // Go to Contract Dashboard - Sales Connection
@@ -113,26 +121,25 @@ test('Check change of status inside the sidebar',async ({page}) => {
     
     // Click the 'Active Lead' element on the tablist
     await page.getByRole('tablist').getByText('Active Lead').click();
+    
     // Click the job inside the 'Active Lead' container
-    await page.getByTitle('Active Lead').nth(1).click();
+    await page.locator('.card-content').first().click();
 
     /* ASSERTION START */
     // Click the edit icon button
-    await page.locator('#sc-layout-vue-app').getByText('edit', { exact: true }).click();
+    await page.locator('#sc-layout-vue-app').getByText('edit').click();
 
     // Open arrow drop down and select 'Stand By' option
-    const statusOption = page.getByRole('combobox').nth(1);
-    const selectStandBy = statusOption.selectOption('9467');
-    await selectStandBy;
+    const selectStandby = statusOption.selectOption('9467');
+    await selectStandby;
 
     // Click 'Save Contract' button
     await page.getByRole('button', { name: 'Save Contract' }).click();
 
     // Expect sidebar status have 'Stand By'
-    const statusStandBy = page.getByRole('textbox', { name: 'Standby' }).first();
     await expect(statusStandBy).toBeVisible();
+
     // Expect page have add the job from 'Active lead' to 'Stand By' container 
-    const containerStandBy = page.getByTitle('Standby').nth(1);
     await expect(containerStandBy).toBeVisible();
     /* ASSERTION END */
 
@@ -148,10 +155,9 @@ test('Check change of status inside the sidebar',async ({page}) => {
     await page.getByRole('button', { name: 'Save Contract' }).click();
 
     // Expect sidebar status have 'Active Lead'
-    const statusActive = page.getByRole('textbox', { name: 'Active Lead' }).first();
     await expect(statusActive).toBeVisible();
+    
     // Expect page have add the job from 'Stand By' to 'Active Lead' container 
-    const containerActive = page.getByTitle('Active Lead').nth(1);
     await expect(containerActive).toBeVisible();
 });
 
