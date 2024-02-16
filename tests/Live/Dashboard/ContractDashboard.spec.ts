@@ -82,17 +82,19 @@ test('Check visibility of each element inside the tablist',async ({page}) => {
 });
 
 test('Check selected elements assigned to following board container', async ({page}) => {
+    const pendingApprovalElement = page.getByRole('tablist').getByText('Pending Approval');
+    const containerOfPendingApproval = page.locator('div:nth-child(2) > div').filter({ hasText: 'Pending Approval' }).first();
+    const containerOfActiveLead = page.locator('div:nth-child(2) > div').filter({ hasText: 'Active Lead' }).first();
+
     await loginAdmin(page);
     // Go to Contract Dashboard - Sales Connection
     await page.goto('https://salesconnection.my/dashboard/project');
 
     /* ASSERTION START */
     // Click the 'Pending Approval' element
-    const pendingApprovalElement = page.getByRole('tablist').getByText('Pending Approval');
     await pendingApprovalElement.click();
 
     // Expect page board have the container of 'Pending Approval'
-    const containerOfPendingApproval = page.locator('div:nth-child(2) > div').filter({ hasText: 'Pending Approval' }).first();
     await expect(containerOfPendingApproval).toBeVisible();
     /* ASSERTION END */
 
@@ -100,7 +102,6 @@ test('Check selected elements assigned to following board container', async ({pa
     await page.getByRole('tablist').getByText('Active Lead').click();
 
     // Expect page board return to 'Active Lead' container
-    const containerOfActiveLead = page.locator('div:nth-child(2) > div').filter({ hasText: 'Active Lead' }).first();
     await expect(containerOfActiveLead).toBeVisible();
 });
 
