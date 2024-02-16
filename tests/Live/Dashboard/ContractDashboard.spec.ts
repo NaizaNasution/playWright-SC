@@ -162,37 +162,41 @@ test('Check change of status inside the sidebar',async ({page}) => {
 });
 
 test('Check specific customer name in Contract Dashboard',async ({page}) => {
+    const searchKeyword = 'Freck';
+    const customerName = page.locator('div').filter({ hasText: /^Customer Name:Freck$/ }).first();
+
     await loginAdmin(page);
 
     // Go to Contract Dashboard - Sales Connection
     await page.goto('https://salesconnection.my/dashboard/project');
 
-    // Assign the search key
-    const searchKeyword = 'Freck';
-
     // Click search bar
     await page.getByRole('textbox', { name: 'Search' }).click();
+    
     // Click 'Client' label
     await page.locator('div').filter({ hasText: /^Client$/ }).first().click();    
+    
     // Click 'Customer Name' label
     await page.getByText('Customer Name').click();
+    
     // Click label 'Customer Name:' that has text 'Contain'
     await page.getByText('Contain', { exact: true }).click();
     
     /* ASSERTION START */
     // Fill Customer Name 'Freck'
     await page.getByPlaceholder('Find search key or enter').fill(searchKeyword);
+    
     // Pressing the "Enter" key
     await page.getByPlaceholder('Find search key or enter').press('Enter');
     
     // Expects page to have a text contain 'Customer Name:Freck'.
-    const customerName = page.locator('div').filter({ hasText: /^Customer Name:Freck$/ }).first();
     await expect(customerName).toBeVisible();
     /* ASSERTION END */
 
     /* REMOVE ASSERTION */
     // Close 'Customer Name:Freck'.
     await page.locator('.sc-search-tag-remove').click();
+    
     // Expect page to not have a text contain 'Customer Name:Tim'.
     await expect(customerName).toBeHidden();
 });
