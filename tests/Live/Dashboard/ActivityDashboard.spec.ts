@@ -66,6 +66,7 @@ async function createContractSeqNo(page: any, selectGroup: any, selectFilterVari
     await page.getByText('Done').click();
 }
 
+// Test 1
 test('Open and close Contract Dashboard page from Activity Dashboard page', async ({ page }) => {
     const contractIcon = page.locator('ol').filter({ hasText: 'ContractDashboard' }).locator('div').first();
     const newTab = page.waitForEvent('popup');
@@ -93,6 +94,7 @@ test('Open and close Contract Dashboard page from Activity Dashboard page', asyn
     await contractDashboardPage.close();
 });
 
+// Test 2
 test('Check selected elements assigned to following board container', async ({page}) => {
     const inReviewElement = page.getByRole('tablist').getByText('Pending Approval');
     const containerOfPendingApproval = page.locator('#board-container div').filter({ hasText: 'Pending Approval' }).nth(3);
@@ -117,6 +119,7 @@ test('Check selected elements assigned to following board container', async ({pa
     await expect(containerOfNotStarted).toBeVisible();
 });
 
+// Test 3
 test('Check change of status inside the sidebar',async ({page}) => {
     const statusNotStarted = page.locator('#board-container p').filter({ hasText: 'Not Started' }).first();
     const containerOfNotStarted = page.locator('#board-container div').filter({ hasText: 'Not Started' }).nth(3);
@@ -198,6 +201,7 @@ test('Check change of status inside the sidebar',async ({page}) => {
     await expect(containerOfNotStarted).toBeVisible();
 });
 
+// Test 4
 test('Check visibility of each element inside the tablist', async ({page}) => {
     await loginAdmin(page);
     // Go to Activity Dashboard - Sales Connection
@@ -233,6 +237,7 @@ test('Check visibility of each element inside the tablist', async ({page}) => {
     await page.getByRole('tablist').getByText('Not Started').click();
 });
 
+// Test 5
 test('Check specific customer name in Activity Dashboard',async ({page}) => {
     const searchKeyword = 'Tim';
     const customerName = page.locator('div').filter({ hasText: /^Customer Name:Tim$/ }).first();
@@ -271,6 +276,7 @@ test('Check specific customer name in Activity Dashboard',async ({page}) => {
     await expect(customerName).toBeHidden();
 })
 
+// Test 6
 test('Add/remove a user inside the sidebar',async ({page}) => {
     const job = page.locator('.kanban-column-card-item').first();
     const searchUserKeyword = 'Frank';
@@ -332,6 +338,7 @@ test('Add/remove a user inside the sidebar',async ({page}) => {
     await expect(sideBarAssignedUser).toBeHidden();
 });
 
+// Test 7
 test('Create/delete a job',async ({page}) => {
     const defaultCategory = page.getByText('Category* Test (WEB)');
     const defaultStatus = page.getByText('Status* Not Started');
@@ -415,6 +422,7 @@ test('Create/delete a job',async ({page}) => {
     await expect(jobOnBoard).toBeHidden();
 });
 
+// Test 8
 test('Check change of category inside the sidebar',async ({page}) => {
     const job = page.locator('.card-content').first();
     const initialCategory = page.locator('p').filter({ hasText: /^Service$/ });
@@ -520,6 +528,7 @@ test('Check change of category inside the sidebar',async ({page}) => {
     await expect(initialJobCategory).toBeVisible();
 });
 
+// Test 9
 test('Check change of status by drag and drop between the container',async ({page}) => {
     // Job before and after switch of the position
     const initialJobPosition = page.locator('.card-content').first();
@@ -601,6 +610,7 @@ test('Check change of status by drag and drop between the container',async ({pag
     await expect(initialInProgressJobCount).toBeVisible();
 });
 
+// Test 10
 test('Check detail of duplicate job',async ({page}) => {
     const category = page.locator('p').filter({ hasText: 'Test (WEB)' });
     const status = page.locator('p').filter({ hasText: /^Not Started$/ }).first();
@@ -680,6 +690,7 @@ test('Check detail of duplicate job',async ({page}) => {
     await page.getByRole('button', { name: 'OK' }).click();
 });
 
+// Test 11
 test('Check visibility of each job inside a status container', async ({page}) => {
     // Index of 'Not Started' the status column
     const kanbanColumnIndex = 1;
@@ -709,6 +720,7 @@ test('Check visibility of each job inside a status container', async ({page}) =>
     }
 });
 
+// Test 12
 test('Create/delete a favourite filter', async ({page}) => {
     const favouriteFilterKeyword = 'Filter contract C00764';
     const defaultFavouriteFilter = page.locator('div').filter({ hasText: /^Favourite Filter$/ }).first();
@@ -759,6 +771,7 @@ test('Create/delete a favourite filter', async ({page}) => {
     await expect(addedFilter).not.toBeVisible();
 });
 
+// Test 13
 test('Update/remove an element from favourite filter', async ({page}) => {
     // Favourite Filter variables
     const favouriteFilterKeyword = 'Filter contract C00764';
@@ -857,6 +870,7 @@ test('Update/remove an element from favourite filter', async ({page}) => {
     await expect(addedFilter).not.toBeVisible();
 });
 
+// Test 14
 test('Clear searched title element with "Clear All" button', async ({page}) => {
     // Selection of search bar group,filter variable and operator
     const selectGroup = page.locator('div').filter({ hasText: /^Activity Contract$/ }).first();
@@ -885,6 +899,7 @@ test('Clear searched title element with "Clear All" button', async ({page}) => {
     /* ASSERTION END */
 });
 
+// Test 15
 test('Clear favourite filter with "Clear All" button', async ({page}) => {
     const favouriteFilterKeyword = 'Filter contract C00764';
     const defaultFavouriteFilter = page.locator('div').filter({ hasText: /^Favourite Filter$/ }).first();
