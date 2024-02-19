@@ -272,6 +272,7 @@ test('Check specific customer name in Activity Dashboard',async ({page}) => {
 })
 
 test('Add/remove a user inside the sidebar',async ({page}) => {
+    const searchUserKeyword = 'Frank';
     const assignUser = page.getByRole('dialog').getByText('Frank').first();
     const sideBarAssignedUser = page.locator('#board-container').getByText('Frank');
 
@@ -295,7 +296,7 @@ test('Add/remove a user inside the sidebar',async ({page}) => {
     await page.getByRole('textbox', { name: 'Search name' }).click();
     
     // Fill in 'Frank' name
-    await page.getByRole('textbox', { name: 'Search name' }).fill('Frank');
+    await page.getByRole('textbox', { name: 'Search name' }).fill(searchUserKeyword);
     
     // Press keyboard 'Enter'
     await page.getByRole('textbox', { name: 'Search name' }).press('Enter');
