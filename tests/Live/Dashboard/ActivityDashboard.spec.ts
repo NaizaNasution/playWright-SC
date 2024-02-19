@@ -272,6 +272,7 @@ test('Check specific customer name in Activity Dashboard',async ({page}) => {
 })
 
 test('Add/remove a user inside the sidebar',async ({page}) => {
+    const job = page.locator('.kanban-column-card-item').first();
     const searchUserKeyword = 'Frank';
     const assignUser = page.getByRole('dialog').getByText('Frank').first();
     const sideBarAssignedUser = page.locator('#board-container').getByText('Frank');
@@ -280,7 +281,7 @@ test('Add/remove a user inside the sidebar',async ({page}) => {
     await page.goto('https://salesconnection.my/dashboard/task');
 
     // Click a job inside the 'Not Started' container
-    await page.locator('.kanban-column-card-item').first().click();
+    await job.click();
     
     // Click edit button
     await page.locator('span').filter({ hasText: 'more_vert' }).click();
