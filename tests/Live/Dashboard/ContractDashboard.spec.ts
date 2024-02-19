@@ -201,7 +201,7 @@ test('Check specific customer name in Contract Dashboard',async ({page}) => {
     await expect(customerName).toBeHidden();
 });
 
-test('Add/remove a user inside the sidebar 2.0',async ({page}) => {
+test('Add/remove a user inside the sidebar',async ({page}) => {
     const searchUserKeyword = 'Frank';
     const assignUser = page.locator('div').filter({ hasText: /^Frank$/ });
     const sideBarAssignedUser = page.getByText('person_add Add People JJoseph');
