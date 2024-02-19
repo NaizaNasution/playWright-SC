@@ -18,6 +18,7 @@ async function loginAdmin(page: any){
     // Login Ends
 }
 
+// Test 1
 test('Open and close Activity Dashboard page from Contract Dashboard page', async ({ page }) => {
     await loginAdmin(page);
     
@@ -44,6 +45,7 @@ test('Open and close Activity Dashboard page from Contract Dashboard page', asyn
     await activityDashboardPage.close();
 });
 
+// Test 2
 test('Check visibility of each element inside the tablist',async ({page}) => {
     await loginAdmin(page);
     // Go to Contract Dashboard - Sales Connection
@@ -81,6 +83,7 @@ test('Check visibility of each element inside the tablist',async ({page}) => {
     await page.getByRole('tablist').getByText(elementTexts[0]).click();
 });
 
+// Test 3
 test('Check selected elements assigned to following board container', async ({page}) => {
     const pendingApprovalElement = page.getByRole('tablist').getByText('Pending Approval');
     const containerOfPendingApproval = page.locator('div:nth-child(2) > div').filter({ hasText: 'Pending Approval' }).first();
@@ -105,6 +108,7 @@ test('Check selected elements assigned to following board container', async ({pa
     await expect(containerOfActiveLead).toBeVisible();
 });
 
+// Test 4
 test('Check change of status inside the sidebar',async ({page}) => {
     const statusOption = page.getByRole('combobox').nth(1);
    
@@ -161,6 +165,7 @@ test('Check change of status inside the sidebar',async ({page}) => {
     await expect(containerActive).toBeVisible();
 });
 
+// Test 5
 test('Check specific customer name in Contract Dashboard',async ({page}) => {
     const searchKeyword = 'Freck';
     const customerName = page.locator('div').filter({ hasText: /^Customer Name:Freck$/ }).first();
@@ -201,6 +206,7 @@ test('Check specific customer name in Contract Dashboard',async ({page}) => {
     await expect(customerName).toBeHidden();
 });
 
+// Test 6
 test('Add/remove a user inside the sidebar',async ({page}) => {
     const searchUserKeyword = 'Frank';
     const assignUser = page.locator('div').filter({ hasText: /^Frank$/ });
@@ -256,4 +262,63 @@ test('Add/remove a user inside the sidebar',async ({page}) => {
 
     // Expect sidebar assigned user have remove 'Frank'
     await expect(sideBarAssignedUser).not.toContainText(searchUserKeyword);
+});
+
+// Test 7
+test('Check change of category inside the sidebar',async ({page}) => {
+    const job = page.locator('.card-content').first();
+    const categoryOption = page.getByRole('combobox').first();
+    const statusOption = page.getByRole('combobox').nth(1);
+    const initialCategory = page.getByRole('textbox', { name: 'Sales' });
+    const initialStatus = page.getByRole('textbox', { name: 'Active Lead' });
+    const changedCategory = page.getByRole('textbox', { name: 'Service' });
+    const changedStatus = page.getByRole('textbox', { name: 'Standby' });
+
+    await loginAdmin(page);
+    await page.goto('https://salesconnection.my/dashboard/project');
+
+    // Click a job inside the 'Active lead' container
+    await job.click();
+
+    // Expect sidebar initial category and status is 'Sales' and 'Active Lead'
+    await expect(initialCategory).toBeVisible();
+    await expect(initialStatus).toBeVisible();
+
+    /* ASSERTION START */
+    // Click edit button from the sidebar
+    await page.locator('#sc-layout-vue-app').getByText('edit').click();
+
+    // Open arrow drop down and select 'Service' option
+    const selectService = categoryOption.selectOption('85154');
+    await selectService;
+
+    // Expect option 'StandBy' is auto selected
+    await expect(statusOption).toHaveValue('9467');
+
+    // Click 'Save' button
+    await page.getByRole('button', { name: 'Save Contract' }).click();
+
+    // Expect sidebar have category 'Service' and service 'Stand by'
+    await expect(changedCategory).toBeVisible();
+    await expect(changedStatus).toBeVisible();
+    /* ASSERTION END */
+
+    /* REMOVE ASSERTION */
+    // Click edit button from the sidebar
+    await page.locator('#sc-layout-vue-app').getByText('edit').click();
+    
+    // Open arrow drop down and select 'Sales' option
+    const selectSales = categoryOption.selectOption('82882');
+    await selectSales;
+
+    // Open arrow drop down and select 'Stand By' option
+    const selectActive = statusOption.selectOption('61574');
+    await selectActive;
+
+    // Click 'Save' button
+    await page.getByRole('button', { name: 'Save Contract' }).click();
+
+    // Expect sidebar have category 'Sales' and service 'Active Lead'
+    await expect(initialCategory).toBeVisible();
+    await expect(initialStatus).toBeVisible();
 });
