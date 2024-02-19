@@ -200,3 +200,60 @@ test('Check specific customer name in Contract Dashboard',async ({page}) => {
     // Expect page to not have a text contain 'Customer Name:Tim'.
     await expect(customerName).toBeHidden();
 });
+
+test('Add/remove a user inside the sidebar 2.0',async ({page}) => {
+    const searchUserKeyword = 'Frank';
+    const assignUser = page.locator('div').filter({ hasText: /^Frank$/ });
+    const sideBarAssignedUser = page.getByText('person_add Add People JJoseph');
+
+    await loginAdmin(page);
+    await page.goto('https://salesconnection.my/dashboard/project');
+
+    // Click a job inside the 'Active lead' container
+    await page.locator('.card-content').first().click();
+
+    // Click edit button from the sidebar
+    await page.locator('#sc-layout-vue-app').getByText('edit').click();
+
+    // Click list user bar on title 'Assigned To'
+    await sideBarAssignedUser.click();
+
+    /* ASSERTION START */
+    // Click search bar
+    await page.getByRole('textbox', { name: 'Search name' }).click();
+
+    // Fill in 'Frank' name
+    await page.getByRole('textbox', { name: 'Search name' }).fill(searchUserKeyword);
+
+    // Press keyboard 'Enter'
+    await page.getByRole('textbox', { name: 'Search name' }).press('Enter');
+
+    // Click 'Frank' checkbox option
+    await page.getByRole('dialog').locator('div').filter({ hasText: /^FFrankSub Admin$/ }).first().click();
+    
+    // Expect page have the 'Frank' title added
+    await expect(assignUser).toBeVisible();
+
+    // Click 'Save' button
+    await page.getByRole('button', { name: 'Save', exact: true }).click();
+
+    // Expect sidebar assigned user have added 'Frank'
+    await expect(sideBarAssignedUser).toContainText(searchUserKeyword);
+    /* ASSERTION END */
+
+    /* REMOVE ASSERTION */
+    // Click list user bar on title 'Assigned To'
+    await sideBarAssignedUser.click();
+
+    // Click remove 'Frank' button
+    await page.locator('li').filter({ hasText: 'Frank' }).locator('span').nth(1).click();
+    
+    // Expect page have the 'Frank' title removed
+    await expect(assignUser).toBeHidden();
+
+    // Click 'Save' button
+    await page.getByRole('button', { name: 'Save', exact: true }).click();
+
+    // Expect sidebar assigned user have remove 'Frank'
+    await expect(sideBarAssignedUser).not.toContainText(searchUserKeyword);
+});
