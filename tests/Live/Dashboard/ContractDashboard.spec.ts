@@ -18,6 +18,20 @@ async function loginAdmin(page: any){
     // Login Ends
 }
 
+/* Function that get total count of jobs in each status container */
+async function getStatusJobCount(page: any) {
+    const statusCountLabel = page.locator('div:nth-child(2) > div:nth-child(2) > div > div').first();
+    
+    // Get inner text of status and count
+    const textContent = await statusCountLabel.innerText();
+
+    // Get only number string from the textContent
+    const numbersOnly = textContent.match(/\d+/g);
+
+    // Return list of Job Count in number data tyoe
+    return numbersOnly.map( (num: string) => parseInt(num) );
+}
+
 // Test 1
 test('Open and close Activity Dashboard page from Contract Dashboard page', async ({ page }) => {
     await loginAdmin(page);
@@ -321,4 +335,101 @@ test('Check change of category inside the sidebar',async ({page}) => {
     // Expect sidebar have category 'Sales' and service 'Active Lead'
     await expect(initialCategory).toBeVisible();
     await expect(initialStatus).toBeVisible();
+});
+
+// test 8
+test('Check change of status by drag and drop between the container',async ({page}) => {
+    // Job before and after switch of the position
+    const initialJobPosition = page.locator('.card-content').first();
+    const changedJobPosition = page.locator('div:nth-child(2) > .surface-hover > div').first();
+    
+    // Change of status box that allow user to drop the job
+    const intitialBox = page.getByText('Change Status ToActive Lead');
+    const destinationBox = page.getByText('Change Status ToStandby');
+
+    const popUpUpdate = page.getByText('Status Updated Status');
+
+    await loginAdmin(page);
+    await page.goto('https://salesconnection.my/dashboard/project');
+
+    // Stop and wait 5000 milliseconds
+    await page.waitForTimeout(5000);
+
+    // Call function that get each status initial count of job from the page
+    const initialListOfJobCounts =  await getStatusJobCount(page);
+
+    // Hover the mouse to a job inside 'Active Lead' container
+    await initialJobPosition.hover();
+
+    /* ASSERTION START */
+    // Press down mouse button
+    await page.mouse.down();
+
+    // Hover the mouse to container of 'Standby'
+    await page.locator('div:nth-child(2) > .surface-hover').first().hover();
+
+    // Hover the mouse to the colored box inside of 'Standby' container
+    await destinationBox.hover();
+
+    // Release mouse button
+    await page.mouse.up();
+
+    // Click 'Update' button
+    await page.getByRole('button', { name: 'Update' }).click();
+
+    // Expect page have pop up of status update
+    await expect(popUpUpdate).toBeVisible();
+
+    // Stop and wait 5000 milliseconds
+    await page.waitForTimeout(5000);
+
+    // Call function that get each status changed count of job from the page
+    const changedListOfJobCounts =  await getStatusJobCount(page);
+
+    // Expect the changed count of jobs label is less than initial count of jobs label in 'Active Lead' status column
+    expect(changedListOfJobCounts[0]).toBeLessThan(initialListOfJobCounts[0]);
+
+    // Expect the changed count of jobs label is equal to initial count of jobs label "-1" in 'Active Lead' status column
+    expect(changedListOfJobCounts[0]).toEqual(initialListOfJobCounts[0] - 1);
+
+    // Expect the changed count of jobs label is less than initial count of jobs label in 'Standby' status column
+    expect(changedListOfJobCounts[1]).toBeGreaterThan(initialListOfJobCounts[1]);
+
+    // Expect the changed count of jobs label is equal to initial count of jobs label "+1" in 'Standby' status column
+    expect(changedListOfJobCounts[1]).toEqual(initialListOfJobCounts[1] + 1);
+    /* ASSERTION END */
+
+    /* REMOVE ASSERTION */
+    // Hover the mouse to a job inside 'Active Lead' container
+    await changedJobPosition.hover();
+
+    // Press down the mouse
+    await page.mouse.down();
+
+    // Hover the mouse to container of 'Standby'
+    await page.locator('.kanban-column-container > div > .surface-hover').first().hover();
+
+    // Hover the mouse to coloured box inside the 'Not Started' container
+    await intitialBox.hover();
+
+    // Release mouse button
+    await page.mouse.up();
+
+    // Click 'Update' button
+    await page.getByRole('button', { name: 'Update' }).click();
+    
+    // Expect page have pop up of status update
+    await expect(popUpUpdate).toBeVisible();
+
+    // Stop and wait 5000 milliseconds
+    await page.waitForTimeout(5000);
+
+    // Call function that get each status final count of job from the page
+    const finalListOfJobCounts = await getStatusJobCount(page);
+
+    // Expect the final count of jobs label is equal to initial count of jobs label in 'Active Lead' status column
+    expect(finalListOfJobCounts[0]).toEqual(initialListOfJobCounts[0]);
+    
+    // Expect the final count of jobs label is equal to initial count of jobs label in 'Standby' status column
+    expect(finalListOfJobCounts[0]).toEqual(initialListOfJobCounts[0]);
 });
