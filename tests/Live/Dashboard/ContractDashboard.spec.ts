@@ -433,3 +433,37 @@ test('Check change of status by drag and drop between the container',async ({pag
     // Expect the final count of jobs label is equal to initial count of jobs label in 'Standby' status column
     expect(finalListOfJobCounts[0]).toEqual(initialListOfJobCounts[0]);
 });
+
+// test 9
+test('Check visibility of each job inside a status container', async ({page}) => {
+    // Index of 'Active Lead' the status column
+    const kanbanColumnIndex = 1;
+    // Index of the job
+    let surfaceHoverIndex = 1;
+
+    let selector = '.kanban-column-container > div:nth-child(' + kanbanColumnIndex + ') > .surface-hover > div:nth-child(' + surfaceHoverIndex + ')';
+    let selectJob = page.locator(selector).first();
+
+    await loginAdmin(page);
+    await page.goto('https://salesconnection.my/dashboard/project');
+
+    // Stop and wait 5000 milliseconds
+    await page.waitForTimeout(5000);
+
+    // Count of job shown on the status container
+    const listOfJobCounts = await getStatusJobCount(page);
+
+    // Iteration on job in 'Active Lead' container
+    for (let i = 1; i <= listOfJobCounts[0]; i++) {
+        surfaceHoverIndex = i;
+
+        selector = '.kanban-column-container > div:nth-child(' + kanbanColumnIndex + ') > .surface-hover > div:nth-child(' + surfaceHoverIndex + ')';
+        selectJob = page.locator(selector).first();
+
+        // Scroll down when there is no visible of the job
+        await selectJob.scrollIntoViewIfNeeded();
+
+        // Expect the column have the job shown
+        await expect(selectJob).toBeInViewport();
+    }
+});
