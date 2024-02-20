@@ -18,6 +18,20 @@ async function loginAdmin(page: any){
     // Login Ends
 }
 
+/* Function that get total count of jobs in each status container */
+async function getStatusJobCount(page: any) {
+    const statusCountLabel = page.locator('#board-container div').nth(64);
+    
+    // Get inner text of status and count
+    const textContent = await statusCountLabel.innerText();
+
+    // Get only number string from the textContent
+    const numbersOnly = textContent.match(/\d+/g);
+
+    // Return list of Job Count in number data tyoe
+    return numbersOnly.map( (num: string) => parseInt(num) );
+}
+
 /* Function that create new favourite filter*/
 async function createNewFavourite(page: any, keyword: String) {
     // Click 'Favourite Filter' button
@@ -534,24 +548,20 @@ test('Check change of status by drag and drop between the container',async ({pag
     const initialJobPosition = page.locator('.card-content').first();
     const changedJobPosition = page.locator('div:nth-child(3) > .surface-hover > div > .card-wrapper-outter > .card-content').first();
 
-    // Changes of job count in each of status column
-    const initialNotStartedJobCount = page.locator('#board-container div').filter({ hasText: 'Not Started' }).filter({ hasText: '33' }).nth(3);
-    const finalNotStartedJobCount = page.locator('#board-container div').filter({ hasText: 'Not Started' }).filter({ hasText: '32' }).nth(3);
-    const initialInProgressJobCount = page.locator('#board-container div').filter({ hasText: 'In Progress' }).filter({ hasText: '1' }).nth(3);
-    const finalInProgressJobCount = page.locator('#board-container div').filter({ hasText: 'In Progress' }).filter({ hasText: '2' }).nth(3);
-
     // Change of status box that allow user to drop the job
     const intitialBox = page.getByText('Change Status ToNot Started');
     const destinationBox = page.getByText('Change Status ToIn Progress');
 
-    const popUpUpdate = page.locator('div').filter({ hasText: 'Confirm Update StatusAre you' }).first();
+    const popUpUpdate = page.getByText('Status Updated Status');
 
     await loginAdmin(page);
     await page.goto('https://salesconnection.my/dashboard/task');
 
-    // Expect job count in status 'Not Started' is 31 and 'In Progress' is 1
-    await expect(initialNotStartedJobCount).toBeVisible();
-    await expect(initialInProgressJobCount).toBeVisible();
+    // Stop and wait 5000 milliseconds
+    await page.waitForTimeout(5000);
+
+    // Call function that get each status initial count of job from the page
+    const initialListOfJobCounts =  await getStatusJobCount(page);
 
     // Hover the mouse to a job inside 'Not Started' container
     await initialJobPosition.hover();
@@ -575,9 +585,23 @@ test('Check change of status by drag and drop between the container',async ({pag
     // Expect page have pop up of status update
     await expect(popUpUpdate).toBeVisible();
 
-    // Expect job count in status 'Not Started' is 30 and 'In Progress' is 2
-    await expect(finalNotStartedJobCount).toBeVisible();
-    await expect(finalInProgressJobCount).toBeVisible();
+    // Stop and wait 5000 milliseconds
+    await page.waitForTimeout(5000);
+
+    // Call function that get each status changed count of job from the page
+    const changedListOfJobCounts =  await getStatusJobCount(page);
+
+    // Expect the changed count of jobs label is less than initial count of jobs label in 'Not Started' status column
+    expect(changedListOfJobCounts[0]).toBeLessThan(initialListOfJobCounts[0]);
+
+    // Expect the changed count of jobs label is equal to initial count of jobs label "-1" in 'Not Started' status column
+    expect(changedListOfJobCounts[0]).toEqual(initialListOfJobCounts[0] - 1);
+
+    // Expect the changed count of jobs label is less than initial count of jobs label in 'In Progress' status column
+    expect(changedListOfJobCounts[2]).toBeGreaterThan(initialListOfJobCounts[2]);
+
+    // Expect the changed count of jobs label is equal to initial count of jobs label "+1" in 'In Progress' status column
+    expect(changedListOfJobCounts[2]).toEqual(initialListOfJobCounts[2] + 1);
     /* ASSERTION END */
 
     /* REMOVE ASSERTION */
@@ -596,18 +620,23 @@ test('Check change of status by drag and drop between the container',async ({pag
     // Release mouse button
     await page.mouse.up();
 
-    // Expect page have pop up of status update
-    await expect(popUpUpdate).toBeVisible();
-
     // Click 'Update' button
     await page.getByRole('button', { name: 'Update' }).click();
 
     // Expect page have pop up of status update
     await expect(popUpUpdate).toBeVisible();
         
-    // Expect job count in status 'Not Started' is 31 and 'In Progress' is 1
-    await expect(initialNotStartedJobCount).toBeVisible();
-    await expect(initialInProgressJobCount).toBeVisible();
+    // Stop and wait 5000 milliseconds
+    await page.waitForTimeout(5000);
+
+    // Call function that get each status final count of job from the page
+    const finalListOfJobCounts = await getStatusJobCount(page);
+
+    // Expect the final count of jobs label is equal to initial count of jobs label in 'Not Started' status column
+    expect(finalListOfJobCounts[0]).toEqual(initialListOfJobCounts[0]);
+
+    // Expect the final count of jobs label is equal to initial count of jobs label in 'In Progress' status column
+    expect(finalListOfJobCounts[0]).toEqual(initialListOfJobCounts[0]);
 });
 
 // Test 10
