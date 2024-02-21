@@ -18,6 +18,7 @@ async function loginAdmin(page: any){
     // Login Ends
 }
 
+// Test 1
 test('Open and close Contract Dashboard page from Activity Dashboard page', async ({ page }) => {
     await loginAdmin(page);
     
@@ -44,6 +45,7 @@ test('Open and close Contract Dashboard page from Activity Dashboard page', asyn
     await activityDashboardPage.close();
 });
 
+// Test 2
 test('Check visibility of each element inside the tablist',async ({page}) => {
     await loginAdmin(page);
     // Go to Maintenance Form Dashboard - Sales Connection
@@ -73,27 +75,75 @@ test('Check visibility of each element inside the tablist',async ({page}) => {
     await page.getByRole('tablist').getByText(elementTexts[0]).click();
 });
 
-test('Check selected elements assigned to following board container', async ({page}) => {
-    const completedElement = page.getByRole('tablist').getByText('Completed', { exact: true });
-    const containerOfCompleted = page.locator('div:nth-child(2) > div').filter({ hasText: 'Completed' }).first();
-    const containerOfCreated = page.locator('div:nth-child(2) > div').filter({ hasText: 'Created' }).first();
+// test 3
+test('Check change of status inside the sidebar',async ({page}) => {
+    const bannerCreatedStatus = page.getByText('CREATED by Naireza');
+    const bannerPendingStatus = page.getByText('PENDING APPROVAL by Naireza');
+
+    const updatePopUp = page.getByText('Maintenance Form UpdatedStatus Updated Successfully!');
 
     await loginAdmin(page);
+
     // Go to Maintenance Form Dashboard - Sales Connection
     await page.goto('https://salesconnection.my/dashboard/digitalform?c=DR05');
 
-    /* ASSERTION START */
-    // Click the 'Completed' element
-    await completedElement.click();
+    // Click the 'Created' element on the tablist
+    await page.getByRole('tablist').getByText('Created').click();
     
-    // Expect page board have the container of 'Completed'
-    await expect(containerOfCompleted).toBeVisible();
-    /* ASSERTION END */
+    // Click the job inside the 'Created' container
+    await page.locator('.kanban-column-card-item').first().click();
+
+    // Expect sidebar banner change to 'CREATED'
+    await expect(bannerCreatedStatus).toBeVisible();
+
+    // Click the edit icon button
+    await page.locator('div').filter({ hasText: /^Maintenance FormMF01256$/ }).first().locator('i').click();
+
+    /* ASSERTION START */
+    // Click 'Change Status' button
+    await page.locator('li').filter({ hasText: 'Change StatusClick here to' }).click();
+
+    // Click tabpanel under the Status title
+    await page.locator('div').filter({ hasText: /^StatusCreated$/ }).locator('div').first().click();
+
+    // Click 'Pending Approval'
+    await page.getByLabel('Pending Approval').click();
+
+    // Click 'Save' button
+    await page.getByRole('button', { name: 'Save' }).click();
+
+    // Expect page have pop up of status update
+    await expect(updatePopUp).toBeVisible();
+
+    // Stop and wait 3000 milliseconds
+    await page.waitForTimeout(3000);
+
+    // Expect sidebar banner change to 'PENDING APPROVAL'
+    await expect(bannerPendingStatus).toBeVisible();
+    /* ASSERTINO END */
 
     /* REMOVE ASSERTION */
-    await page.getByRole('tablist').getByText('Created').click();
+    // Click the edit icon button
+    await page.locator('div').filter({ hasText: /^Maintenance FormMF01256$/ }).first().locator('i').click();
 
-    // Expect page board return to 'Created' container
-    await expect(containerOfCreated).toBeVisible();
+    // Click 'Change Status' button
+    await page.locator('li').filter({ hasText: 'Change StatusClick here to' }).click();
+
+    // Click tabpanel under the Status title
+    await page.locator('div').filter({ hasText: /^StatusPending Approval$/ }).locator('div').first().click()
+
+    // Click 'Pending Approval'
+    await page.getByLabel('Created').click();
+
+    // Click 'Save' button
+    await page.getByRole('button', { name: 'Save' }).click();
+
+    // Expect page have pop up of status update
+    await expect(updatePopUp).toBeVisible();
+
+    // Expect sidebar banner change to 'PENDING APPROVAL'
+    await expect(bannerPendingStatus).toBeHidden();
+
+    // Expect sidebar banner change to 'CREATED'
+    await expect(bannerCreatedStatus).toBeVisible();
 });
-
