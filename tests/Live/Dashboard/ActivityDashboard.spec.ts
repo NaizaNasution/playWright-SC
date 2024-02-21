@@ -915,7 +915,7 @@ test('Clear searched title element with "Clear All" button', async ({page}) => {
 
     /* ASSERTION START */
     // Call function to create new Contract Seq No. :C00764, C00764
-    await createContractSeqNo(page, selectGroup, selectFilterVariable, selectOperator, keyword);
+    await createContractSeqNo(page, keyword);
 
     // Expect page have 'Contract Seq No. :C00764, C00764' title
     await expect(contractSeqNo).toBeVisible();
