@@ -74,16 +74,19 @@ test('Check visibility of each element inside the tablist',async ({page}) => {
 });
 
 test('Check selected elements assigned to following board container', async ({page}) => {
+    const completedElement = page.getByRole('tablist').getByText('Completed', { exact: true });
+    const containerOfCompleted = page.locator('div:nth-child(2) > div').filter({ hasText: 'Completed' }).first();
+    const containerOfCreated = page.locator('div:nth-child(2) > div').filter({ hasText: 'Created' }).first();
+
     await loginAdmin(page);
     // Go to Maintenance Form Dashboard - Sales Connection
     await page.goto('https://salesconnection.my/dashboard/digitalform?c=DR05');
 
     /* ASSERTION START */
     // Click the 'Completed' element
-    const completedElement = page.getByRole('tablist').getByText('Completed', { exact: true });
     await completedElement.click();
+    
     // Expect page board have the container of 'Completed'
-    const containerOfCompleted = page.locator('div:nth-child(2) > div').filter({ hasText: 'Completed' }).first();
     await expect(containerOfCompleted).toBeVisible();
     /* ASSERTION END */
 
@@ -91,7 +94,6 @@ test('Check selected elements assigned to following board container', async ({pa
     await page.getByRole('tablist').getByText('Created').click();
 
     // Expect page board return to 'Created' container
-    const containerOfCreated = page.locator('div:nth-child(2) > div').filter({ hasText: 'Created' }).first();
     await expect(containerOfCreated).toBeVisible();
 });
 
