@@ -75,7 +75,32 @@ test('Check visibility of each element inside the tablist',async ({page}) => {
     await page.getByRole('tablist').getByText(elementTexts[0]).click();
 });
 
-// test 3
+// Test 3
+test('Check selected elements assigned to following board container', async ({page}) => {
+    const completedElement = page.getByRole('tablist').getByText('Completed', { exact: true });
+    const containerOfCompleted = page.locator('div:nth-child(2) > div').filter({ hasText: 'Completed' }).first();
+    const containerOfCreated = page.locator('div:nth-child(2) > div').filter({ hasText: 'Created' }).first();
+
+    await loginAdmin(page);
+    // Go to Maintenance Form Dashboard - Sales Connection
+    await page.goto('https://salesconnection.my/dashboard/digitalform?c=DR05');
+
+    /* ASSERTION START */
+    // Click the 'Completed' element
+    await completedElement.click();
+    
+    // Expect page board have the container of 'Completed'
+    await expect(containerOfCompleted).toBeVisible();
+    /* ASSERTION END */
+
+    /* REMOVE ASSERTION */
+    await page.getByRole('tablist').getByText('Created').click();
+
+    // Expect page board return to 'Created' container
+    await expect(containerOfCreated).toBeVisible();
+});
+
+// test 4
 test('Check change of status inside the sidebar',async ({page}) => {
     const bannerCreatedStatus = page.getByText('CREATED by Naireza');
     const bannerPendingStatus = page.getByText('PENDING APPROVAL by Naireza');
