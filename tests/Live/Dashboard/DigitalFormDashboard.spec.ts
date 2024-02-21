@@ -172,3 +172,42 @@ test('Check change of status inside the sidebar',async ({page}) => {
     // Expect sidebar banner change to 'CREATED'
     await expect(bannerCreatedStatus).toBeVisible();
 });
+
+// Test 5
+test('Check specific customer name in Activity Dashboard',async ({page}) => {
+    const searchKeyword = 'Tim';
+    const customerName = page.locator('div').filter({ hasText: /^Customer Name:Tim$/ }).first();
+
+    await loginAdmin(page);
+    await page.goto('https://salesconnection.my/dashboard/digitalform?c=DR05');
+    
+    // Click search bar
+    await page.getByRole('textbox', { name: 'Search' }).click();
+
+    // Click 'Client' label
+    await page.locator('div').filter({ hasText: /^Client$/ }).first().click();
+
+    // Click 'Customer Name' label
+    await page.getByText('Customer Name').click();
+
+    // Click label 'Customer Name:' that has text 'Contain'
+    await page.getByText('Contain', { exact: true }).click();
+
+    /* ASSERTION START */
+    // Fill Customer Name 'Tim'
+    await page.getByPlaceholder('Find search key or enter').fill(searchKeyword);
+
+    // Pressing the "Enter" key
+    await page.getByPlaceholder('Find search key or enter').press('Enter');
+
+    // Expects page to have a text contain 'Customer Name:Tim'.
+    await expect(customerName).toBeVisible();
+    /* ASSERTION END */
+
+    /* REMOVE ASSERTION */
+    // Close 'Customer Name:Tim'.
+    await page.locator('.sc-search-tag-remove').click();
+
+    // Expect page to not have a text contain 'Customer Name:Tim'.
+    await expect(customerName).toBeHidden();
+});
