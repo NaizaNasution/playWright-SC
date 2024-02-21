@@ -694,3 +694,60 @@ test('Clear searched title element with "Clear All" button', async ({page}) => {
     await expect(contractSeqNo).toBeHidden();
     /* ASSERTION END */
 });
+
+// test 13
+test('Clear favourite filter with "Clear All" button', async ({page}) => {
+    const favouriteFilterKeyword = 'Filter contract C00717';
+    const defaultFavouriteFilter = page.locator('div').filter({ hasText: /^Favourite Filter$/ }).first();
+    const newFavouriteFilter = page.locator('div').filter({ hasText: /^Filter contract C00717$/ }).first();
+    const addedFilter = page.getByText('Filter contract C00717public_off');
+    const popUpDeleted = page.locator('div').filter({ hasText: 'DeletedFavourite filter' }).nth(3);
+
+    await loginAdmin(page);
+    await page.goto('https://salesconnection.my/dashboard/project');
+
+    /* ASSERTION START */
+    // Call function to create new favourite filter 'Filter contract C00717'
+    await createNewFavourite(page, favouriteFilterKeyword);
+
+    // Expect button title 'Filter contract C00717' is shown
+    await expect(newFavouriteFilter).toBeVisible();
+
+    // Click 'Clear All' button
+    await page.locator('#sc-layout-vue-app').getByText('Clear All').click();
+
+    // Expect button title 'Filter contract C00717' is not shown
+    await expect(newFavouriteFilter).toBeHidden();
+
+    // Expect button title 'Favourite Filter' is shown
+    await expect(defaultFavouriteFilter).toBeVisible();
+
+    // Click 'Favourite Filter' button
+    await defaultFavouriteFilter.click();
+
+    // Expect menu bar has title 'Filter contract C00717'
+    await expect(addedFilter).toBeVisible();
+    /* ASSERTION END */
+
+    /* REMOVE ASSERTION */
+    // Click 'Delete' button on title 'Filter contract C00717'
+    await page.getByTitle('Delete').nth(1).click();
+
+    // Click 'Yes' button
+    await page.getByRole('button', { name: ' Yes' }).click();
+
+    // Expect pop up 'DeletedFavourite filter' is shown
+    await expect(popUpDeleted).toBeVisible();
+
+    // Expect button title 'Filter contract C00764' is not shown
+    await expect(newFavouriteFilter).toBeHidden();
+
+    // Expect button title 'Favourite Filter' is shown
+    await expect(defaultFavouriteFilter).toBeVisible();
+
+    // Click 'Favourite Filter' button
+    await defaultFavouriteFilter.click();
+
+    // Expect menu bar has no title 'Filter contract C00717'
+    await expect(addedFilter).toBeHidden();
+});
