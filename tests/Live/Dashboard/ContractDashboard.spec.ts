@@ -487,7 +487,7 @@ test('Check visibility of each job inside a status container', async ({page}) =>
 });
 
 // test 10
-test('Create/delete a favourite filter', async ({page}) => {
+test('Create/delete a favourite filter', async ({page}) => { 
     const favouriteFilterKeyword = 'Filter contract C00717';
     const defaultFavouriteFilter = page.locator('div').filter({ hasText: /^Favourite Filter$/ }).first();
     const newFavouriteFilter = page.locator('div').filter({ hasText: /^Filter contract C00717$/ }).first();

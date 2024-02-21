@@ -51,7 +51,12 @@ async function createNewFavourite(page: any, keyword: String) {
 }
 
 /* Function that create new Contract Seq No.*/
-async function createContractSeqNo(page: any, selectGroup: any, selectFilterVariable: any, selectOperator: any, keyword: String) {
+async function createContractSeqNo(page: any, keyword: String) {
+    // Selection of search bar group,filter variable and operator
+    const selectGroup = page.locator('div').filter({ hasText: /^Activity Contract$/ }).first();
+    const selectFilterVariable = page.getByText('Contract Seq. No.');
+    const selectOperator = page.getByText('Contain', { exact: true });
+
     // Click search bar
     await page.getByRole('textbox', { name: 'Search' }).click();
 
@@ -810,11 +815,6 @@ test('Update/remove an element from favourite filter', async ({page}) => {
     const alertSymbol = page.locator('div:nth-child(3) > .relative > .absolute').first();
     const updateText = page.locator('div').filter({ hasText: /^You have made changes, click here to update$/ });
     const popUpDeleted = page.locator('div').filter({ hasText: 'DeletedFavourite filter' }).nth(3);
-
-    // Selection of search bar group,filter variable and operator
-    const selectGroup = page.locator('div').filter({ hasText: /^Activity Contract$/ }).first();
-    const selectFilterVariable = page.getByText('Contract Seq. No.');
-    const selectOperator = page.getByText('Contain', { exact: true });
 
     // Input keyword and new filter element
     const keyword = 'C00764';
