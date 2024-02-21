@@ -570,7 +570,7 @@ test('Create/delete a favourite filter', async ({page}) => {
 
     // Expect menu bar has no title 'Filter contract C00717'
     await expect(addedFilter).not.toBeVisible();
-})
+});
 
 // test 11
 test('Update/remove an element from favourite filter', async ({page}) => {
@@ -664,4 +664,33 @@ test('Update/remove an element from favourite filter', async ({page}) => {
 
     // Expect menu bar has no title 'Filter contract C00717'
     await expect(addedFilter).not.toBeVisible();
+});
+
+// test 12
+test('Clear searched title element with "Clear All" button', async ({page}) => {
+    // Selection of search bar group,filter variable and operator
+    const selectGroup = page.locator('div').filter({ hasText: /^Activity Contract$/ }).first();
+    const selectFilterVariable = page.getByText('Contract Seq. No.');
+    const selectOperator = page.getByText('Contain', { exact: true });
+
+    // Input keyword and new filter element
+    const keyword = 'C00717';
+    const contractSeqNo = page.locator('div').filter({ hasText: /^Contract Seq\. No\.:C00717, C00717$/ }).first();
+
+    await loginAdmin(page);
+    await page.goto('https://salesconnection.my/dashboard/project');
+
+    /* ASSERTION START */
+    // Call function to create new Contract Seq No. :C00717, C00717
+    await createContractSeqNo(page, keyword);
+
+    // Expect page have 'Contract Seq No. :C00717, C00717' title
+    await expect(contractSeqNo).toBeVisible();
+
+    // Click 'Clear All' button
+    await page.locator('#sc-layout-vue-app').getByText('Clear All').click();
+
+    // Expect page NOT have 'Contract Seq No. :C00717, C00717' title
+    await expect(contractSeqNo).toBeHidden();
+    /* ASSERTION END */
 });
