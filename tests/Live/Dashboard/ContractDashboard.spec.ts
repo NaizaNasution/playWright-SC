@@ -32,6 +32,24 @@ async function getStatusJobCount(page: any) {
     return numbersOnly.map( (num: string) => parseInt(num) );
 }
 
+/* Function that create new favourite filter*/
+async function createNewFavourite(page: any, keyword: String) {
+    // Click 'Favourite Filter' button
+    await page.locator('div').filter({ hasText: /^Favourite Filter$/ }).first().click();
+    
+    // Click 'Add' button
+    await page.getByText('Add').click();
+
+    // Click search bar with placeholder 'Enter label name'
+    await page.getByPlaceholder('Enter label name').click();
+
+    // Fill keyword inside the search bar
+    await page.getByPlaceholder('Enter label name').fill(keyword);
+
+    // Click 'Save' button
+    await page.locator('div').filter({ hasText: /^Save$/ }).locator('span').click();
+}
+
 // Test 1
 test('Open and close Activity Dashboard page from Contract Dashboard page', async ({ page }) => {
     await loginAdmin(page);
@@ -486,13 +504,13 @@ test('Create/delete a favourite filter', async ({page}) => {
     // Call function to create new favourite filter
     await createNewFavourite(page, favouriteFilterKeyword);
 
-    // Expect button title 'Filter contract C00764' is shown
+    // Expect button title 'Filter contract C00717' is shown
     await expect(newFavouriteFilter).toBeVisible();
 
-    // Click 'Filter contract C00764' button
+    // Click 'Filter contract C00717' button
     await newFavouriteFilter.click();
 
-    // Expect menu bar has title 'Filter contract C00764'
+    // Expect menu bar has title 'Filter contract C00717'
     await expect(addedFilter).toBeVisible();
     /* ASSERTION END */
 
@@ -506,7 +524,7 @@ test('Create/delete a favourite filter', async ({page}) => {
     // Expect pop up 'DeletedFavourite filter' is shown
     await expect(popUpDeleted).toBeVisible();
 
-    // Expect button title 'Filter contract C00764' is not shown
+    // Expect button title 'Filter contract C00717' is not shown
     await expect(newFavouriteFilter).not.toBeVisible();
 
     // Expect button title 'Favourite Filter' is shown
@@ -515,6 +533,6 @@ test('Create/delete a favourite filter', async ({page}) => {
     // Click 'Favourite Filter' button
     await defaultFavouriteFilter.click();
 
-    // Expect menu bar has no title 'Filter contract C00764'
+    // Expect menu bar has no title 'Filter contract C00717'
     await expect(addedFilter).not.toBeVisible();
 })
