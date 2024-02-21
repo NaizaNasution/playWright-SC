@@ -831,7 +831,7 @@ test('Update/remove an element from favourite filter', async ({page}) => {
     await expect(newFavouriteFilter).toBeVisible();
 
     // Call function to create new Contract Seq No. :C00764, C00764
-    await createContractSeqNo(page, selectGroup, selectFilterVariable, selectOperator, keyword);
+    await createContractSeqNo(page, keyword);
 
     // Expect page have 'Contract Seq No. :C00764, C00764' title
     await expect(contractSeqNo).toBeVisible();
