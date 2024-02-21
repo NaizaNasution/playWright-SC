@@ -467,3 +467,54 @@ test('Check visibility of each job inside a status container', async ({page}) =>
         await expect(selectJob).toBeInViewport();
     }
 });
+
+// test 10
+test('Create/delete a favourite filter', async ({page}) => {
+    const favouriteFilterKeyword = 'Filter contract C00717';
+    const defaultFavouriteFilter = page.locator('div').filter({ hasText: /^Favourite Filter$/ }).first();
+    const newFavouriteFilter = page.locator('div').filter({ hasText: /^Filter contract C00717$/ }).first();
+    const addedFilter = page.getByText('Filter contract C00717public_off');
+    const popUpDeleted = page.locator('div').filter({ hasText: 'DeletedFavourite filter' }).nth(3);
+
+    await loginAdmin(page);
+    await page.goto('https://salesconnection.my/dashboard/project');
+
+    // Expect button title 'Favourite Filter' is shown
+    await expect(defaultFavouriteFilter).toBeVisible();
+
+    /* ASSERTION START */
+    // Call function to create new favourite filter
+    await createNewFavourite(page, favouriteFilterKeyword);
+
+    // Expect button title 'Filter contract C00764' is shown
+    await expect(newFavouriteFilter).toBeVisible();
+
+    // Click 'Filter contract C00764' button
+    await newFavouriteFilter.click();
+
+    // Expect menu bar has title 'Filter contract C00764'
+    await expect(addedFilter).toBeVisible();
+    /* ASSERTION END */
+
+    /* REMOVE ASSERTION */
+    // Click 'Delete' button
+    await page.getByTitle('Delete').first().click();
+
+    // Click 'Yes' button
+    await page.getByRole('button', { name: ' Yes' }).click();
+
+    // Expect pop up 'DeletedFavourite filter' is shown
+    await expect(popUpDeleted).toBeVisible();
+
+    // Expect button title 'Filter contract C00764' is not shown
+    await expect(newFavouriteFilter).not.toBeVisible();
+
+    // Expect button title 'Favourite Filter' is shown
+    await expect(defaultFavouriteFilter).toBeVisible();
+
+    // Click 'Favourite Filter' button
+    await defaultFavouriteFilter.click();
+
+    // Expect menu bar has no title 'Filter contract C00764'
+    await expect(addedFilter).not.toBeVisible();
+})
