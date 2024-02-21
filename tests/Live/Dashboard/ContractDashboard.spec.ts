@@ -50,6 +50,41 @@ async function createNewFavourite(page: any, keyword: String) {
     await page.locator('div').filter({ hasText: /^Save$/ }).locator('span').click();
 }
 
+/* Function that create new Contract Seq No.*/
+async function createContractSeqNo(page: any, keyword: String) {
+    // Selection of search bar group,filter variable and operator
+    const selectGroup = page.locator('div').filter({ hasText: /^Contract$/ }).first();
+    const selectFilterVariable = page.getByText('Contract Seq. No.');
+    const selectOperator = page.getByText('Contain', { exact: true });
+    
+    // Click search bar
+    await page.getByRole('textbox', { name: 'Search' }).click();
+
+    // Click 'Activity Contract' button
+    await selectGroup.click();
+
+    // Click 'Contract Seq No.' button
+    await selectFilterVariable.click();
+
+    // Click 'Contract Seq No. :' with contain operator button
+    await selectOperator.click();
+
+    // Click placeholder 'Min'
+    await page.getByPlaceholder('Min').click();
+
+    // Fill 'C00764' as min
+    await page.getByPlaceholder('Min').fill(keyword);
+
+    // Click placeholder 'Max'
+    await page.getByPlaceholder('Max').click();
+
+    // Fill 'C00764' as max
+    await page.getByPlaceholder('Max').fill(keyword);
+
+    // Click 'Done' button
+    await page.locator('span').filter({ hasText: 'Done' }).click();
+}
+
 // Test 1
 test('Open and close Activity Dashboard page from Contract Dashboard page', async ({ page }) => {
     await loginAdmin(page);
@@ -536,3 +571,97 @@ test('Create/delete a favourite filter', async ({page}) => {
     // Expect menu bar has no title 'Filter contract C00717'
     await expect(addedFilter).not.toBeVisible();
 })
+
+// test 11
+test('Update/remove an element from favourite filter', async ({page}) => {
+    // Favourite Filter variables
+    const favouriteFilterKeyword = 'Filter contract C00717';
+    const defaultFavouriteFilter = page.locator('div').filter({ hasText: /^Favourite Filter$/ }).first();
+    const newFavouriteFilter = page.locator('div').filter({ hasText: /^Filter contract C00717$/ }).first();
+    const addedFilter = page.getByText('Filter contract C00717public_off');
+    const alertSymbol = page.locator('div:nth-child(3) > .relative > .absolute').first();
+    const updateText = page.locator('div').filter({ hasText: /^You have made changes, click here to update$/ });
+    const popUpDeleted = page.locator('div').filter({ hasText: 'DeletedFavourite filter' }).nth(3);
+
+    // Input keyword and new filter element
+    const keyword = 'C00717';
+    const contractSeqNo = page.locator('div').filter({ hasText: /^Contract Seq\. No\.:C00717, C00717$/ }).first();
+
+    await loginAdmin(page);
+    await page.goto('https://salesconnection.my/dashboard/project');
+
+    /* ASSERTION START */
+    // Call function to create new favourite filter 'Filter contract C00717'
+    await createNewFavourite(page, favouriteFilterKeyword);
+
+    // Expect button title 'Filter contract C00717' is shown
+    await expect(newFavouriteFilter).toBeVisible();
+
+    // Call function to create new Contract Seq No. :C00717, C00717
+    await createContractSeqNo(page, keyword);
+
+    // Expect page have 'Contract Seq No. :C00717, C00717' title
+    await expect(contractSeqNo).toBeVisible();
+
+    // Expect '!' alert symbol shown on button title 'Filter contract C00717'
+    await expect(alertSymbol).toBeVisible();
+
+    // Click 'Filter contract C00717' button
+    await newFavouriteFilter.click();
+
+    // Expect text 'You have made changes, click here to update' is shown
+    await expect(updateText).toBeVisible();
+
+    // Click text 'You have made changes, click here to update'
+    await updateText.click();
+
+    // Click 'Yes' button
+    await page.getByRole('button', { name: 'Yes' }).click();
+
+    // Expect '!' alert symbol NOT shown on button title 'Filter contract C00717'
+    await expect(alertSymbol).not.toBeVisible();
+    /* ASSERTION END */
+
+    /* REMOVE ASSERTION */
+    // Remove 'Contract Seq No. :C00717, C00717'
+    await page.locator('.sc-search-tag-remove').click();
+
+    // Expect '!' alert symbol shown on button title 'Filter contract C00717'
+    await expect(alertSymbol).toBeVisible();
+
+    // Click 'Filter contract C00717' button
+    await newFavouriteFilter.click();
+
+    // Expect text 'You have made changes, click here to update' is shown
+    await expect(updateText).toBeVisible();
+
+    // Click text 'You have made changes, click here to update'
+    await updateText.click();
+
+    // Click 'Yes' button
+    await page.getByRole('button', { name: 'Yes' }).click();
+
+    // Expect '!' alert symbol NOT shown on button title 'Filter contract C00717'
+    await expect(alertSymbol).not.toBeVisible();
+
+    // Click 'Filter contract C00764' button
+    await newFavouriteFilter.click();
+
+    // Click 'Delete' button under 'Filter contract C00717' title
+    await page.getByTitle('Delete').first().click();
+
+    // Click 'Yes' button
+    await page.getByRole('button', { name: ' Yes' }).click();
+
+    // Expect pop up 'DeletedFavourite filter' is shown
+    await expect(popUpDeleted).toBeVisible();
+
+    // Expect button title 'Favourite Filter' is shown
+    await expect(defaultFavouriteFilter).toBeVisible();
+
+    // Click 'Favourite Filter' button
+    await defaultFavouriteFilter.click();
+
+    // Expect menu bar has no title 'Filter contract C00717'
+    await expect(addedFilter).not.toBeVisible();
+});
