@@ -112,3 +112,24 @@ test ('Create and get "Maintenance Form Details" url', async ({ page }) => {
         await expect(page).not.toHaveURL('https://salesconnection.my/ServiceReport/Transaction?g=1245&t=DR05&a=2477940&c=291640&d=255356&f=activity');
     });
 });
+
+test ('Delete Maintenance Form Details', async ({page}) => {
+    await test.step('1. Go to "Maintenance Form Details"', async () => {
+        await loginAdmin(page);
+        await page.goto(detailMFUrl);
+    });
+
+    await test.step('2. Delete the Maintenance Form', async () => {
+        const deletedText = page.getByText('Digital Form was deleted');
+
+        await page.locator('#action-bar span i').click();
+        await page.getByRole('heading', { name: 'Delete' }).click();
+        await page.getByRole('button', { name: ' Yes' }).click();
+        await page.waitForTimeout(3000);
+
+        // Expect page show text 'Digital Form was deleted'
+        await expect(deletedText).toBeVisible();
+    });
+
+    await page.close();
+});
