@@ -24,7 +24,7 @@ async function loginAdmin(page: any){
     // Login Ends
 }
 
-test ('Create and get "Add Maintenance Form" url', async ({page}) => {
+test ('Open and get "Add Maintenance Form" url', async ({page}) => {
     let pageMF: any;
 
     await test.step('1. Go to Activity Dashboard - Sales Connection', async () => {
@@ -74,7 +74,7 @@ test ('Create and get "Add Maintenance Form" url', async ({page}) => {
     });
 });
 
-test ('Create and get "Maintenance Form Details" url', async ({ page }) => {
+test ('Open and get "Maintenance Form Details" url', async ({ page }) => {
     await test.step('1. Go to "Add Maintenance Form"', async () => {
         await loginAdmin(page);
         await page.goto(addMFUrl);
