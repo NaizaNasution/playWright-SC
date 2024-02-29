@@ -177,6 +177,57 @@ test ('Open and get "Update Maintenance Form" url', async ({ page }) => {
     test.fail(updateMFUrl === 'https://salesconnection.my/dashboard/digitalform?c=DR05', 'The page is still in "Maintenance Form Dashboard" url');
 });
 
+test ('Update/change the status in "Maintenance Form Details"', async ({ page }) => {
+    const initialStatusBanner = page.getByRole('link', { name: 'CREATED by Naireza Nasution' });
+    const changedStatusBanner = page.getByRole('link', { name: 'PENDING APPROVAL by Naireza' });
+    const initialStatusBtn = page.getByRole('button', { name: 'Created' });
+    const changedStatusBtn = page.getByRole('button', { name: 'Pending Approval' });
+    const initialStatusOpt = page.locator('a').filter({ hasText: 'Created' });
+    const changedStatusOpt = page.locator('a').filter({ hasText: 'Pending Approval' });
+
+    await test.step('1. Go to "Update Maintenance Form"', async () => {
+        await loginAdmin(page);
+        await page.goto(updateMFUrl);
+        await page.waitForLoadState();
+    });
+
+    /* ASSERTION START */
+    await test.step('2. Change status', async () => {
+        await initialStatusBtn.click();
+        await changedStatusOpt.scrollIntoViewIfNeeded();
+        await changedStatusOpt.click();
+
+        // Expect the page status button have changed to 'Pending Approval'
+        await expect(changedStatusBtn).toBeVisible();
+    });
+
+    await test.step('3. Save status', async () => {
+        await saveMF(page);
+    })
+
+    await test.step('4. Check status', async () => {
+        // Expect the page have show status link 'PENDING APPROVAL by Naireza'
+        await expect(changedStatusBanner).toBeVisible();
+    });
+    /* ASSERTION END */
+
+    /* REMOVE ASSERTION */
+    await test.step('5. Change back to initial status', async () => {
+        await page.goto(updateMFUrl);
+        await changedStatusBtn.click();
+        await initialStatusOpt.scrollIntoViewIfNeeded();
+        await initialStatusOpt.click();
+
+        // Expect the page status button have changed to 'Created'
+        await expect(initialStatusBtn).toBeVisible();
+
+        await saveMF(page);
+
+        // Expect the page have show status link 'CREATED by Naireza Nasution'
+        await expect(initialStatusBanner).toBeVisible();
+    })
+});
+
 test ('Delete Maintenance Form Details', async ({page}) => {
     await test.step('1. Go to "Maintenance Form Details"', async () => {
         await loginAdmin(page);
