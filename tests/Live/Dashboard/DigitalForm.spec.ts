@@ -83,6 +83,27 @@ test ('Open and get "Add Maintenance Form" url', async ({page}) => {
     test.fail(addMFUrl === null, 'The page does not open new tab in "Add Maintenance Form" url');
 });
 
+test ('Create new "Maintenance Form Details"', async ({ page }) => {
+    await test.step('1. Go to "Add Maintenance Form"', async () => {
+        await loginAdmin(page);
+        await page.goto(addMFUrl);
+        await page.waitForLoadState();
+    });
+    
+    await test.step('2. Fill in details', async () => {
+        const customT1 = 'Test add MF';
+
+        await page.getByPlaceholder('Enter Custom Text 1').fill(customT1);
+    });
+
+    await test.step('3. Save the Maintenance Form', async () => {
+        await saveMF(page);
+        await page.waitForLoadState();
+    });
+
+    test.fail(page.url() === addMFUrl, 'The page is still in "Add Maintenance Form" url');
+});
+
 test ('Open and get "Maintenance Form Details" url', async ({ page }) => {
     await test.step('1. Go to "Add Maintenance Form"', async () => {
         await loginAdmin(page);
