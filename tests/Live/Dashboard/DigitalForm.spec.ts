@@ -142,6 +142,41 @@ test ('Open and get "Maintenance Form Details" url', async ({ page }) => {
     test.fail(detailMFUrl === null, 'The page does not open new tab in "Maintenance Form Detail" url');
 });
 
+test ('Open and get "Update Maintenance Form" url', async ({ page }) => {
+    await test.step('1. Go to Maintenance Form Dashboard - Sales Connection', async () => {
+        await loginAdmin(page);
+        await page.goto('https://salesconnection.my/dashboard/digitalform?c=DR05');
+        await page.waitForLoadState();
+    });
+    
+    await test.step('2. Select favourite filter "Favourite Activity A08567"', async () => {
+        await page.waitForTimeout(5000);
+        await openFavouriteFilter(page);
+        await page.waitForTimeout(5000);
+    });
+
+    await test.step('3. Open a "Update Maintenance Form"', async () => {
+        const job = page.locator('.card-content').first();
+        const threedot = page.locator('div').locator('i').nth(1);
+        const editBtn = page.locator('li').filter({ hasText: 'EditClick to edit your' });
+
+        await page.waitForTimeout(3000);
+        await job.click();
+        await page.waitForTimeout(3000);
+        await threedot.click();
+        await editBtn.click();
+        await page.getByRole('button', { name: 'Edit' }).click();
+        await page.waitForLoadState();
+    });
+
+    await test.step('4. Get "Update Maintenance Form" url', async () => {
+        await page.waitForLoadState();
+        updateMFUrl = page.url();
+    });
+
+    test.fail(updateMFUrl === 'https://salesconnection.my/dashboard/digitalform?c=DR05', 'The page is still in "Maintenance Form Dashboard" url');
+});
+
 test ('Delete Maintenance Form Details', async ({page}) => {
     await test.step('1. Go to "Maintenance Form Details"', async () => {
         await loginAdmin(page);
