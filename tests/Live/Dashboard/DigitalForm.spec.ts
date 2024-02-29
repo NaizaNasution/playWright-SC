@@ -228,10 +228,11 @@ test ('Update/change the status in "Maintenance Form Details"', async ({ page })
     })
 });
 
-test ('Delete Maintenance Form Details', async ({page}) => {
+test ('Delete "Maintenance Form Details"', async ({page}) => {
     await test.step('1. Go to "Maintenance Form Details"', async () => {
         await loginAdmin(page);
         await page.goto(detailMFUrl);
+        await page.waitForLoadState();
     });
 
     await test.step('2. Delete the Maintenance Form', async () => {
@@ -244,6 +245,7 @@ test ('Delete Maintenance Form Details', async ({page}) => {
 
         // Expect page show text 'Digital Form was deleted'
         await expect(deletedText).toBeVisible();
+        test.fail(!await deletedText.isVisible(), 'The page ')
     });
 
     await page.close();
