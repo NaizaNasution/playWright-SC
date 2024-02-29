@@ -228,6 +228,93 @@ test ('Update/change the status in "Maintenance Form Details"', async ({ page })
     })
 });
 
+test ('Update/change the reminder in "Maintenance From Details"', async ({ page }) => {
+    const personalReminder = page.getByText('alarm Personal Reminderchevron_right');
+    const selectCheckBox = page.locator('div').filter({ hasText: /^Personal Reminder$/ }).getByRole('checkbox').nth(1);
+
+    await test.step('1. Go to "Update Maintenance Form"', async () => {
+        await loginAdmin(page);
+        await page.goto(updateMFUrl);
+        await page.waitForLoadState();
+    });
+
+    /* ASSERTION START */
+    await test.step('2. Add reminder', async () => {
+        await selectCheckBox.scrollIntoViewIfNeeded();
+        await selectCheckBox.click();
+
+        await test.step('2.1 Check title', async () => {
+            const title = page.locator('div').filter({ hasText: /^Personal Reminder$/ }).nth(1);
+
+            // Expect the page have the title 'Personal Reminder'
+            await expect(title).toBeVisible();
+        });
+
+        await test.step('2.2 Check content', async () => {
+            const content = page.locator('div').filter({ hasText: /^Content$/ }).getByRole('textbox');
+
+            // Expect the page have show the content
+            await expect(content).toBeVisible();
+        });
+
+        await test.step('2.3 Check duration', async () => {
+            const duration = page.getByRole('dialog', { name: 'Personal Reminder' }).getByRole('spinbutton');
+
+            // Expect the page have show the duration
+            await expect(duration).toBeVisible();
+        });
+
+        await test.step('2.4 Check time type', async () => {
+            const timeType = page.locator('div').filter({ hasText: /^Minute$/ }).nth(1);
+
+            // Expect the page have time type;
+            await expect(timeType).toBeVisible();
+        });
+
+        await test.step('2.5 Check condition', async () => {
+            const condition = page.locator('div').filter({ hasText: /^From Now$/ }).nth(1);
+
+            // Expect the page have condition
+            await expect(condition).toBeVisible();
+        });
+
+        await test.step('2.6 Save reminder', async () => {
+            await page.getByRole('button', { name: 'Save' }).click();
+        });
+    });
+
+    await test.step('3. Check reminder checkbox', async () => {
+        const checkBox = page.getByRole('checkbox', { name: '' });
+
+        // Expect the page have the checkbox checked
+        await expect(checkBox).toBeChecked();
+    });
+
+    await test.step('4. Save reminder', async () => {
+        await saveMF(page);
+    });
+
+    await test.step('5. Check reminder list', async () => {
+        // Expect the page have show reminder
+        await expect(personalReminder).toBeVisible();
+    });
+    /* ASSERTION END */
+
+    /* REMOVE ASSERTION */
+    await test.step('6. Change back to initial reminder', async () => {
+        await page.goto(updateMFUrl);
+        await page.getByRole('checkbox', { name: '' }).click();
+
+        // Expect the page not have the checkbox checked
+        await expect(selectCheckBox).not.toBeChecked();
+
+        await saveMF(page);
+
+        // Expect the page hidden the reminder
+        await expect(personalReminder).toBeHidden();
+    });
+});
+
 test ('Delete "Maintenance Form Details"', async ({page}) => {
     await test.step('1. Go to "Maintenance Form Details"', async () => {
         await loginAdmin(page);
