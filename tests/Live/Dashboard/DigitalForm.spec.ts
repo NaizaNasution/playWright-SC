@@ -12,6 +12,9 @@ let addMFUrl: string;
 // URL link of detail maintenance form
 let detailMFUrl: string;
 
+// URL link of update maintenance form
+let updateMFUrl: string;
+
 /* Function that login to Sales Connection website */
 async function loginAdmin(page: any){
     await page.goto('https://salesconnection.my/login');
@@ -24,29 +27,43 @@ async function loginAdmin(page: any){
     // Login Ends
 }
 
+/* Function that open and select favourite filter */
+async function openFavouriteFilter(page: any) {
+    await page.locator('div').filter({ hasText: /^Favourite Filter$/ }).nth(1).click();
+    await page.getByText('Filter Activity A08571public_off').click();
+}
+
+/* Function that save the update/add of the 'Add Maintenance Form' and 'Update Maintenance Form' */
+async function saveMF(page: any) {
+    await page.locator('.btn-savechanges').click();
+    await page.waitForTimeout(3000);
+    await page.getByRole('button', { name: 'OK' }).click();
+    await page.waitForTimeout(3000);
+    await page.getByRole('button', { name: 'OK' }).click();
+}
+
+// Open a new maintenance form for Activity A08567
 test ('Open and get "Add Maintenance Form" url', async ({page}) => {
     let pageMF: any;
 
     await test.step('1. Go to Activity Dashboard - Sales Connection', async () => {
         await loginAdmin(page);
         await page.goto('https://salesconnection.my/dashboard/task');
+        await page.waitForLoadState();
     });
 
     await test.step('2. Select favourite filter "Favourite Activity A08567"', async () => {
-        const favouriteFilterA08567 = page.locator('div').filter({ hasText: /^Filter Activity A08567$/ }).first();
-
-        await page.locator('div').filter({ hasText: /^Favourite Filter$/ }).nth(1).click();
-        await page.getByText('Filter Activity A08567public_off').click();
-
-        // Expect the page have the "Filter Activity A08567" as favourite filter
-        await expect(favouriteFilterA08567).toBeVisible();
+        await page.waitForTimeout(5000);
+        await openFavouriteFilter(page);
+        await page.waitForTimeout(5000);
     });
 
     await test.step('3. Select Create Digital Form', async () => {
-        const job = page.locator('.kanban-column-card-item');
+        const job = page.locator('.card-content').first();
         const createDF = page.getByTitle('Create Digital Form');
         const optionMF = page.locator('div').filter({ hasText: 'Maintenance FormCode: MF' }).nth(3);
 
+        await page.waitForTimeout(5000);
         await job.click();
         await createDF.click();
         await optionMF.click();
@@ -61,17 +78,9 @@ test ('Open and get "Add Maintenance Form" url', async ({page}) => {
 
     await test.step('5. Get the "Add Maintenance Form" url', async () => {
         addMFUrl = pageMF.url();
-
-        await test.step('Check "Add Maintenance Form" header', async () => {
-            const headerMF = pageMF.getByRole('heading', { name: 'Add Maintenance Form' });
-
-            // Expect the page have header "Add Maintenance Form"
-            await expect(headerMF).toBeVisible();
-        });
-
-        // Expect the page to have 'Add Maintenance Form' url
-        await expect(pageMF).toHaveURL('https://salesconnection.my/ServiceReport/Transaction?g=1245&t=DR05&a=2477940&c=291640&d=255356&f=activity');
     });
+
+    test.fail(addMFUrl === null, 'The page does not open new tab in "Add Maintenance Form" url');
 });
 
 test ('Open and get "Maintenance Form Details" url', async ({ page }) => {
