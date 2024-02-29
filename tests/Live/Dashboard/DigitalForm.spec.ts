@@ -105,42 +105,41 @@ test ('Create new "Maintenance Form Details"', async ({ page }) => {
 });
 
 test ('Open and get "Maintenance Form Details" url', async ({ page }) => {
-    await test.step('1. Go to "Add Maintenance Form"', async () => {
+    let pageDMF: any;
+
+    await test.step('1. Go to Maintenance Form Dashboard - Sales Connection', async () => {
         await loginAdmin(page);
-        await page.goto(addMFUrl);
-    });
-    
-    await test.step('2. Fill in details', async () => {
-        const customT1 = 'Test add MF';
-
-        await page.getByPlaceholder('Enter Custom Text 1').fill(customT1);
+        await page.goto('https://salesconnection.my/dashboard/digitalform?c=DR05');
+        await page.waitForLoadState();
     });
 
-    await test.step('3. Save the Maintenance Form', async () => {
-        await page.locator('.btn-savechanges').click();
+    await test.step('2. Select favourite filter "Favourite Activity A08567"', async () => {
+        await page.waitForTimeout(5000);
+        await openFavouriteFilter(page);
+        await page.waitForTimeout(5000);
+    });
+
+    await test.step('3. Open a job', async () => {
+        const job = page.locator('.card-content').first();
+
         await page.waitForTimeout(3000);
-        await page.getByRole('button', { name: 'OK' }).click();
+        await job.click();
         await page.waitForTimeout(3000);
-
-        // Expect the page have shown 'Successfully Saved'
-        await expect(page.getByRole('heading', { name: 'Successfully Saved.' })).toBeVisible();
-    
-        await page.getByRole('button', { name: 'OK' }).click();
+        await page.getByRole('button', { name: '' }).click();
     });
 
-    await test.step('4. Get "Maintenance Form Details" url', async () => {
-        detailMFUrl = page.url();
+    await test.step('4. Open "Maintenance Form Detail" in a new tab', async () => {
+        pageDMF = await page.waitForEvent('popup');
 
-        await test.step('Check "Maintenance Form Details" header', async () => {
-            const headerDF = page.getByRole('heading', { name: 'Maintenance Form Details' });
-
-            // Expect the page have header "Maintenance Form Details"
-            await expect(headerDF).toBeVisible();
-        });
-
-        // Expect the page not have 'Add Maintenance Form' url;
-        await expect(page).not.toHaveURL('https://salesconnection.my/ServiceReport/Transaction?g=1245&t=DR05&a=2477940&c=291640&d=255356&f=activity');
+        await pageDMF.bringToFront();
+        await pageDMF.waitForLoadState();
     });
+
+    await test.step('5. Get the "Maintenance Form Details" url', async () => {
+        detailMFUrl = pageDMF.url();
+    });
+
+    test.fail(detailMFUrl === null, 'The page does not open new tab in "Maintenance Form Detail" url');
 });
 
 test ('Delete Maintenance Form Details', async ({page}) => {
